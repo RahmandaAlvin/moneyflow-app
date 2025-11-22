@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_home"
+    app:startDestination="@id/berandaFragment">
+
+    <fragment
+        android:id="@+id/berandaFragment"
+        android:name="com.rahmanda.moneyflow.home.BerandaFragment"
+        android:label="fragment_beranda"
+        tools:layout="@layout/fragment_beranda" />
+    <fragment
+        android:id="@+id/inputFragment"
+        android:name="com.rahmanda.moneyflow.home.InputFragment"
+        android:label="fragment_input"
+        tools:layout="@layout/fragment_input" />
+    <fragment
+        android:id="@+id/riwayatFragment"
+        android:name="com.rahmanda.moneyflow.home.RiwayatFragment"
+        android:label="fragment_riwayat"
+        tools:layout="@layout/fragment_riwayat" />
+    <fragment
+        android:id="@+id/profilFragment"
+        android:name="com.rahmanda.moneyflow.home.ProfilFragment"
+        android:label="fragment_profil"
+        tools:layout="@layout/fragment_profil" />
+</navigation>

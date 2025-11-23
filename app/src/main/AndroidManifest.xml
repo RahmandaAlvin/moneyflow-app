@@ -28,5 +28,8 @@
             android:exported="true">
         </activity>
 
+        <activity
+            android:name=".InputActivity"/>
+
     </application>
 </manifest>

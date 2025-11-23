@@ -7,6 +7,7 @@ import android.text.TextWatcher
 import android.view.MotionEvent
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.rahmanda.moneyflow.R
 import java.text.NumberFormat
 import java.util.*
 
@@ -28,6 +29,7 @@ class InputActivity : AppCompatActivity() {
 
         initViews()
         setupSpinnerKategori()
+        setupSpinnerTanggalAwal()
         setupTanggalPicker()
         setupAmountFormatter()
         setupButtons()
@@ -40,24 +42,22 @@ class InputActivity : AppCompatActivity() {
         editDeskripsi = findViewById(R.id.editDeskripsi)
         buttonTambahLagi = findViewById(R.id.buttonTambahLagi)
         buttonSelesai = findViewById(R.id.buttonSelesai)
-
-        spinnerTanggal.adapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_spinner_dropdown_item,
-            listOf("Pilih tanggal")
-        )
     }
 
+    // Spinner kategori sekarang pakai layout custom (putih)
     private fun setupSpinnerKategori() {
-        val adapter = ArrayAdapter(
+        val kategoriAdapter = ArrayAdapter(
             this,
-            android.R.layout.simple_spinner_dropdown_item,
+            R.layout.spinner_item_white,
             listOf("Pemasukan", "Pengeluaran")
         )
-        spinnerKategori.adapter = adapter
+        kategoriAdapter.setDropDownViewResource(R.layout.spinner_dropdown_white)
+
+        spinnerKategori.adapter = kategoriAdapter
 
         spinnerKategori.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
+
             override fun onItemSelected(
                 parent: AdapterView<*>?, view: android.view.View?,
                 position: Int, id: Long
@@ -65,6 +65,18 @@ class InputActivity : AppCompatActivity() {
                 selectedType = parent?.getItemAtPosition(position).toString()
             }
         }
+    }
+
+    // Spinner tanggal default (tulisan putih)
+    private fun setupSpinnerTanggalAwal() {
+        val tanggalAdapter = ArrayAdapter(
+            this,
+            R.layout.spinner_item_white,
+            listOf("Pilih tanggal")
+        )
+        tanggalAdapter.setDropDownViewResource(R.layout.spinner_dropdown_white)
+
+        spinnerTanggal.adapter = tanggalAdapter
     }
 
     private fun setupTanggalPicker() {
@@ -76,21 +88,26 @@ class InputActivity : AppCompatActivity() {
 
     private fun openDatePicker() {
         val c = Calendar.getInstance()
+
         val dialog = DatePickerDialog(
             this,
             { _, year, month, day ->
                 selectedDate = "$day/${month + 1}/$year"
 
-                spinnerTanggal.adapter = ArrayAdapter(
+                val adapter = ArrayAdapter(
                     this,
-                    android.R.layout.simple_spinner_dropdown_item,
+                    R.layout.spinner_item_white,
                     listOf(selectedDate)
                 )
+                adapter.setDropDownViewResource(R.layout.spinner_dropdown_white)
+
+                spinnerTanggal.adapter = adapter
             },
             c.get(Calendar.YEAR),
             c.get(Calendar.MONTH),
             c.get(Calendar.DAY_OF_MONTH)
         )
+
         dialog.show()
     }
 
@@ -145,11 +162,7 @@ class InputActivity : AppCompatActivity() {
             amount.hint = "Rp 0"
             editDeskripsi.setText("")
 
-            spinnerTanggal.adapter = ArrayAdapter(
-                this,
-                android.R.layout.simple_spinner_dropdown_item,
-                listOf("Pilih tanggal")
-            )
+            setupSpinnerTanggalAwal() // reset tanggal putih kembali
         }
 
         buttonSelesai.setOnClickListener {

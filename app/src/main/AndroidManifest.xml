@@ -28,5 +28,20 @@
             android:exported="true">
         </activity>
 
+<!--        <activity-->
+<!--            android:name=".home.InputActivity"-->
+<!--            android:exported="true">-->
+<!--        </activity>-->
+
+<!--        <activity-->
+<!--            android:name=".home.RiwayatActivity"-->
+<!--            android:exported="true">-->
+<!--        </activity>-->
+
+<!--        <activity-->
+<!--            android:name=".home.ProfilActivity"-->
+<!--            android:exported="true">-->
+<!--        </activity>-->
+
     </application>
 </manifest>

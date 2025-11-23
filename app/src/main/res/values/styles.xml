@@ -1,0 +1,7 @@
+<resources>
+
+    <style name="SpinnerPopupWhite" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:textColor">#FFFFFFFF</item>
+    </style>
+
+</resources>

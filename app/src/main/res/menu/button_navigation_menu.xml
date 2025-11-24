@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/berandaFragment"
+        android:icon="@drawable/beranda"
+        android:title="Beranda"/>
+
+    <item
+        android:id="@+id/inputFragment"
+        android:icon="@drawable/input"
+        android:title="Input"/>
+
+    <item
+        android:id="@+id/riwayatFragment"
+        android:icon="@drawable/riwayat"
+        android:title="Riwayat"/>
+
+    <item
+        android:id="@+id/profilFragment"
+        android:icon="@drawable/profile"
+        android:title="Profil"/>
+</menu>

@@ -22,14 +22,19 @@
             </intent-filter>
         </activity>
 
-        <!-- HomeActivity -->
+        <!-- ⚠️ HAPUS INI - MainActivity sudah tidak dipakai -->
+        <!-- <activity android:name=".MainActivity" android:exported="false" /> -->
+
+        <!-- HomeActivity (container fragment) -->
         <activity
             android:name=".home.HomeActivity"
-            android:exported="true">
+            android:exported="false">
         </activity>
 
+        <!-- InputActivity (jika masih dipakai) -->
         <activity
-            android:name=".InputActivity"/>
+            android:name=".InputActivity"
+            android:exported="false"/>
 
     </application>
 </manifest>

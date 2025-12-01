@@ -64,7 +64,7 @@ class RiwayatActivity : AppCompatActivity()  {
             calendar.get(Calendar.DAY_OF_MONTH)
         )
 
-        // Tambahkan button "Semua Bulan"
+        // Tambahkan button "Semua Bulan
         datePicker.setButton(DatePickerDialog.BUTTON_NEUTRAL, "Semua Bulan") { _, _ ->
             editTextTanggal.setText("Semua Bulan")
             loadAllData()

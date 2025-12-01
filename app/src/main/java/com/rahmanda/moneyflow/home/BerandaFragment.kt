@@ -122,7 +122,6 @@ class BerandaFragment : Fragment() {
         }
     }
 
-    // Fungsi untuk diakses dari fragment lain
     fun updateFromInput(jumlah: Int, isPemasukan: Boolean) {
         sharedPrefManager.updateSaldo(jumlah, isPemasukan)
         updateDisplayData()

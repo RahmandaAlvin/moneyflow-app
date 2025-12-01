@@ -29,7 +29,13 @@
         </activity>
 
         <activity
-            android:name=".InputActivity"/>
+            android:name=".InputActivity"
+            />
+
+        <activity
+            android:name=".RiwayatActivity"
+            />
+
 
     </application>
 </manifest>

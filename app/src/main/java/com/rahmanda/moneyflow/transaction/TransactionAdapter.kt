@@ -1,67 +1,76 @@
-package com.rahmanda.moneyflow.transaction
-
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
-import com.rahmanda.moneyflow.R
-import com.rahmanda.moneyflow.transaction.Transaction
-
-// DEFINISI KELAS UTAMA:
-class TransactionAdapter : ListAdapter<Transaction, TransactionAdapter.TransactionViewHolder>(DiffCallback) {
-
-    // KELAS BERSARANG (NESTED CLASS) HARUS BERADA DI SINI, BUKAN DEFINISI ADAPTER LAGI
-    class TransactionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        // UBAH DARI ID LAMA KE ID YANG BENAR DARI XML
-        private val tvCategory: TextView =
-            itemView.findViewById(R.id.tvCategory)
-        private val tvDescription: TextView =
-            itemView.findViewById(R.id.tvDescription)
-        private val tvDate: TextView = itemView.findViewById(R.id.tvDate)
-        private val tvAmount: TextView =
-            itemView.findViewById(R.id.tvAmount)
-
-        fun bind(transaction: Transaction) {
-            // Perbarui semua penggunaan variabel di sini
-            tvCategory.text = transaction.type
-            tvDescription.text = transaction.description
-            tvDate.text = transaction.date
-
-            // Set warna berdasarkan jenis transaksi (gunakan tvAmount dan tvCategory yang baru)
-            if (transaction.type == "PEMASUKAN") {
-                tvAmount.text = "+ Rp ${transaction.amount}"
-                tvAmount.setTextColor(ContextCompat.getColor(itemView.context, R.color.green))
-                tvCategory.setTextColor(ContextCompat.getColor(itemView.context, R.color.green))
-            } else {
-                tvAmount.text = "- Rp ${transaction.amount}"
-                tvAmount.setTextColor(ContextCompat.getColor(itemView.context, R.color.red))
-                tvCategory.setTextColor(ContextCompat.getColor(itemView.context, R.color.red))
-            }
-        }
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_transaction, parent, false)
-        return TransactionViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) {
-        holder.bind(getItem(position))
-    }
-
-    companion object DiffCallback : DiffUtil.ItemCallback<Transaction>() {
-        override fun areItemsTheSame(oldItem: Transaction, newItem: Transaction): Boolean {
-            // Perlu properti 'id' di data class Transaction agar ini berfungsi
-            return oldItem.id == newItem.id
-        }
-
-        override fun areContentsTheSame(oldItem: Transaction, newItem: Transaction): Boolean {
-            return oldItem == newItem
-        }
-    }
-} // <-- KURUNG KURAWAL PENUTUP UNTUK KELAS UTAMA
+//package com.rahmanda.moneyflow.transaction
+//
+//import android.view.LayoutInflater
+//import android.view.View
+//import android.view.ViewGroup
+//import android.widget.TextView
+//import androidx.recyclerview.widget.RecyclerView
+//import java.text.SimpleDateFormat
+//import java.util.*
+//
+//// Definisikan class Transaction di sini
+//data class Transaction(
+//    val id: Int,
+//    val type: TransactionType,
+//    val amount: Double,
+//    val description: String,
+//    val category: String,
+//    val date: Date,
+//    val time: String
+//)
+//
+//enum class TransactionType {
+//    INCOME,
+//    EXPENSE
+//}
+//
+//class TransactionAdapter(private var transactions: List<Transaction>) :
+//    RecyclerView.Adapter<TransactionAdapter.ViewHolder>() {
+//
+//    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+//        val tvCategory: TextView = view.findViewById(R.id.tvCategory)
+//        val tvDescription: TextView = view.findViewById(R.id.tvDescription)
+//        val tvDate: TextView = view.findViewById(R.id.tvDate)
+//        val tvAmount: TextView = view.findViewById(R.id.tvAmount)
+//    }
+//
+//    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+//        val view = LayoutInflater.from(parent.context)
+//            .inflate(R.layout.item_transaction, parent, false)
+//        return ViewHolder(view)
+//    }
+//
+//    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+//        val transaction = transactions[position]
+//        val dateFormat = SimpleDateFormat("dd MMMM yyyy HH:mm", Locale("id", "ID"))
+//
+//        holder.tvCategory.text = transaction.category
+//        holder.tvDescription.text = transaction.description
+//        holder.tvDate.text = "${dateFormat.format(transaction.date)}"
+//
+//        val amountText = formatCurrency(transaction.amount)
+//
+//        if (transaction.type == TransactionType.INCOME) {
+//            holder.tvAmount.text = "+ $amountText"
+//            holder.tvAmount.setTextColor(
+//                holder.itemView.context.getColor(android.R.color.holo_green_dark)
+//            )
+//        } else {
+//            holder.tvAmount.text = "- $amountText"
+//            holder.tvAmount.setTextColor(
+//                holder.itemView.context.getColor(android.R.color.holo_red_dark)
+//            )
+//        }
+//    }
+//
+//    override fun getItemCount(): Int = transactions.size
+//
+//    fun updateData(newTransactions: List<Transaction>) {
+//        transactions = newTransactions
+//        notifyDataSetChanged()
+//    }
+//
+//    private fun formatCurrency(amount: Double): String {
+//        return "Rp ${String.format(Locale("id", "ID"), "%,.0f", amount).replace(",", ".")}"
+//    }
+//}

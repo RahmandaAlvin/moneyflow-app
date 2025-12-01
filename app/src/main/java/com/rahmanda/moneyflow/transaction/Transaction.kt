@@ -1,13 +1,18 @@
-package com.rahmanda.moneyflow.transaction
+package com.rahmanda.moneyflow
+
+import java.util.Date
 
 data class Transaction(
-    val id: Int = 0,
-    val type: String, // "PEMASUKAN" atau "PENGELUARAN"
-    val amount: Long,
+    val id: Int,
+    val type: TransactionType,
+    val amount: Double,
     val description: String,
-    val date: String,
-    var saldo: Int = 45000,
-    var pemasukan: Int = 100000,
-    var pengeluaran:Int = 65000
-
+    val category: String,
+    val date: Date,
+    val time: String
 )
+
+enum class TransactionType {
+    INCOME,
+    EXPENSE
+}

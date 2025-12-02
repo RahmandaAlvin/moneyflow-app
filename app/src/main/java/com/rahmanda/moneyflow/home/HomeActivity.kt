@@ -31,9 +31,13 @@ class HomeActivity : AppCompatActivity() {
         bottomNavigationView.setupWithNavController(navController)
 
         // Override klik untuk membuka InputActivity
+        val openRiwayat = intent.getBooleanExtra("open_riwayat", false)
+        if (openRiwayat) {
+            bottomNavigationView.selectedItemId = R.id.riwayatFragment
+        }
+
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
-
                 // Inilah ID fragment input kamu
                 R.id.inputFragment -> {
                     val intent = Intent(this, InputActivity::class.java)

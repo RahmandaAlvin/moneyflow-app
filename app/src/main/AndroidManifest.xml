@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
 
-        <!-- ⚠️ HAPUS INI - MainActivity sudah tidak dipakai -->
+        <!-- ⚠ HAPUS INI - MainActivity sudah tidak dipakai -->
         <!-- <activity android:name=".MainActivity" android:exported="false" /> -->
 
         <!-- HomeActivity (container fragment) -->

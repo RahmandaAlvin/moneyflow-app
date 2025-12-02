@@ -1,0 +1,87 @@
+Index: app/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\">\r\n\r\n    <application\r\n        android:allowBackup=\"true\"\r\n        android:dataExtractionRules=\"@xml/data_extraction_rules\"\r\n        android:fullBackupContent=\"@xml/backup_rules\"\r\n        android:icon=\"@mipmap/ic_launcher\"\r\n        android:label=\"@string/app_name\"\r\n        android:roundIcon=\"@mipmap/ic_launcher_round\"\r\n        android:supportsRtl=\"true\"\r\n        android:theme=\"@style/Theme.MoneyFlow\">\r\n\r\n        <!-- LoginActivity sebagai activity utama -->\r\n        <activity\r\n            android:name=\".LoginActivity\"\r\n            android:exported=\"true\">\r\n            <intent-filter>\r\n                <action android:name=\"android.intent.action.MAIN\" />\r\n                <category android:name=\"android.intent.category.LAUNCHER\" />\r\n            </intent-filter>\r\n        </activity>\r\n\r\n        <!-- HomeActivity -->\r\n        <activity\r\n            android:name=\".home.HomeActivity\"\r\n            android:exported=\"true\">\r\n        </activity>\r\n\r\n<!--        <activity-->\r\n<!--            android:name=\".home.InputActivity\"-->\r\n<!--            android:exported=\"true\">-->\r\n<!--        </activity>-->\r\n\r\n<!--        <activity-->\r\n<!--            android:name=\".home.RiwayatActivity\"-->\r\n<!--            android:exported=\"true\">-->\r\n<!--        </activity>-->\r\n\r\n<!--        <activity-->\r\n<!--            android:name=\".home.ProfilActivity\"-->\r\n<!--            android:exported=\"true\">-->\r\n<!--        </activity>-->\r\n\r\n    </application>\r\n</manifest>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/AndroidManifest.xml b/app/src/main/AndroidManifest.xml
+--- a/app/src/main/AndroidManifest.xml	(revision 4bf00df99cbadce76bdc30c8a8a1ea2158d2d840)
++++ b/app/src/main/AndroidManifest.xml	(date 1763905829241)
+@@ -28,10 +28,11 @@
+             android:exported="true">
+         </activity>
+ 
+-<!--        <activity-->
+-<!--            android:name=".home.InputActivity"-->
+-<!--            android:exported="true">-->
+-<!--        </activity>-->
++        <activity
++            android:name=".InputActivity"
++            android:exported="true">
++        </activity>
++
+ 
+ <!--        <activity-->
+ <!--            android:name=".home.RiwayatActivity"-->
+Index: app/src/main/java/com/rahmanda/moneyflow/home/HomeActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.rahmanda.moneyflow.home\r\n\r\nimport android.os.Bundle\r\nimport androidx.activity.enableEdgeToEdge\r\nimport androidx.appcompat.app.AppCompatActivity\r\nimport androidx.core.view.ViewCompat\r\nimport androidx.core.view.WindowInsetsCompat\r\nimport androidx.navigation.findNavController\r\nimport androidx.navigation.ui.setupWithNavController\r\nimport com.google.android.material.bottomnavigation.BottomNavigationView\r\nimport com.rahmanda.moneyflow.R\r\n\r\nclass HomeActivity : AppCompatActivity() {\r\n    override fun onCreate(savedInstanceState: Bundle?) {\r\n        super.onCreate(savedInstanceState)\r\n        enableEdgeToEdge()\r\n        setContentView(R.layout.activity_home)\r\n        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->\r\n            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())\r\n            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)\r\n            insets\r\n        }\r\n\r\n        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigation)\r\n        val navController = findNavController(R.id.fragmentContainerView)\r\n\r\n        // Setup navigation dengan NavController saja\r\n        bottomNavigationView.setupWithNavController(navController)\r\n\r\n        // HAPUS bagian custom listener untuk RiwayatActivity\r\n        // Biarkan NavController handle semua navigation\r\n    }\r\n}
+===================================================================
+diff --git a/app/src/main/java/com/rahmanda/moneyflow/home/HomeActivity.kt b/app/src/main/java/com/rahmanda/moneyflow/home/HomeActivity.kt
+--- a/app/src/main/java/com/rahmanda/moneyflow/home/HomeActivity.kt	(revision 4bf00df99cbadce76bdc30c8a8a1ea2158d2d840)
++++ b/app/src/main/java/com/rahmanda/moneyflow/home/HomeActivity.kt	(date 1763967028426)
+@@ -1,5 +1,6 @@
+ package com.rahmanda.moneyflow.home
+ 
++import android.content.Intent
+ import android.os.Bundle
+ import androidx.activity.enableEdgeToEdge
+ import androidx.appcompat.app.AppCompatActivity
+@@ -8,6 +9,7 @@
+ import androidx.navigation.findNavController
+ import androidx.navigation.ui.setupWithNavController
+ import com.google.android.material.bottomnavigation.BottomNavigationView
++import com.rahmanda.moneyflow.InputActivity
+ import com.rahmanda.moneyflow.R
+ 
+ class HomeActivity : AppCompatActivity() {
+@@ -15,6 +17,7 @@
+         super.onCreate(savedInstanceState)
+         enableEdgeToEdge()
+         setContentView(R.layout.activity_home)
++
+         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+@@ -24,10 +27,25 @@
+         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigation)
+         val navController = findNavController(R.id.fragmentContainerView)
+ 
+-        // Setup navigation dengan NavController saja
++        // Tetap hubungkan dengan fragment nav
+         bottomNavigationView.setupWithNavController(navController)
+ 
+-        // HAPUS bagian custom listener untuk RiwayatActivity
+-        // Biarkan NavController handle semua navigation
++        // Override klik untuk membuka InputActivity
++        bottomNavigationView.setOnItemSelectedListener { item ->
++            when (item.itemId) {
++
++                // Inilah ID fragment input kamu
++                R.id.inputFragment -> {
++                    val intent = Intent(this, InputActivity::class.java)
++                    startActivity(intent)
++                    false   // Jangan pindah fragment
++                }
++
++                else -> {
++                    navController.navigate(item.itemId)
++                    true
++                }
++            }
++        }
+     }
+ }
+\ No newline at end of file

@@ -3,65 +3,81 @@ package com.rahmanda.moneyflow
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import java.text.SimpleDateFormat
-import java.util.*
+import com.rahmanda.moneyflow.R
 
-class RiwayatAdapter(private var transactions: List<Transaction>) :
-    RecyclerView.Adapter<RiwayatAdapter.ViewHolder>() {
+class RiwayatAdapter(private val transactionGroups: List<TransactionGroup>) :
+    RecyclerView.Adapter<RiwayatAdapter.DateGroupViewHolder>() {
 
-    private val dateFormatDisplay = SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID"))
-    private val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val tvCategory: TextView = view.findViewById(R.id.tvCategory)
-        val tvDescription: TextView = view.findViewById(R.id.tvDescription)
-        val tvDate: TextView = view.findViewById(R.id.tvDate)
-        val tvAmount: TextView = view.findViewById(R.id.tvAmount)
+    class DateGroupViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val tvDate: TextView = itemView.findViewById(R.id.tvDate)
+        val containerItems: ViewGroup = itemView.findViewById(R.id.containerItems)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DateGroupViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_transaction, parent, false)
-        return ViewHolder(view)
+            .inflate(R.layout.item_transaction_with_date, parent, false)
+        return DateGroupViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val transaction = transactions[position]
+    override fun onBindViewHolder(holder: DateGroupViewHolder, position: Int) {
+        val group = transactionGroups[position]
 
-        // Set data transaksi
-        holder.tvCategory.text = transaction.category
-        holder.tvDescription.text = transaction.description
+        // Set tanggal
+        holder.tvDate.text = group.date
 
-        // Format tanggal dan waktu
-        val dateTime = "${dateFormatDisplay.format(transaction.date)} ${transaction.time}"
-        holder.tvDate.text = dateTime
+        // Clear container
+        holder.containerItems.removeAllViews()
 
-        // Format jumlah dengan warna berbeda untuk pemasukan/pengeluaran
-        val amountText = formatCurrency(transaction.amount)
+        // Tambahkan item transaksi ke container
+        group.transactions.forEach { transaction ->
+            val itemView = LayoutInflater.from(holder.itemView.context)
+                .inflate(R.layout.item_transaction, holder.containerItems, false)
 
-        if (transaction.type == TransactionType.INCOME) {
-            holder.tvAmount.text = "+ $amountText"
-            holder.tvAmount.setTextColor(
-                holder.itemView.context.getColor(android.R.color.holo_green_dark)
-            )
-        } else {
-            holder.tvAmount.text = "- $amountText"
-            holder.tvAmount.setTextColor(
-                holder.itemView.context.getColor(android.R.color.holo_red_dark)
-            )
+            bindTransactionItem(itemView, transaction)
+            holder.containerItems.addView(itemView)
         }
     }
 
-    override fun getItemCount(): Int = transactions.size
+    private fun bindTransactionItem(itemView: View, transaction: Transaction) {
+        val ivIcon: ImageView = itemView.findViewById(R.id.ivIcon)
+        val tvCategory: TextView = itemView.findViewById(R.id.tvCategory)
+        val tvDescription: TextView = itemView.findViewById(R.id.tvDescription)
+        val tvAmount: TextView = itemView.findViewById(R.id.tvAmount)
+        val tvDateTime: TextView = itemView.findViewById(R.id.tvDateTime)
 
-    fun updateData(newTransactions: List<Transaction>) {
-        transactions = newTransactions
-        notifyDataSetChanged()
+        // Set data
+        tvCategory.text = transaction.category
+        tvDescription.text = transaction.type
+
+        // Format tanggal untuk tvDateTime (ambil hari dan bulan saja)
+        // Contoh: "13 November 2025" -> "13 NOV"
+        val dateParts = transaction.date.split(" ")
+        if (dateParts.size >= 2) {
+            val day = dateParts[0]
+            val month = dateParts[1].take(3).toUpperCase() // Ambil 3 huruf pertama
+            tvDateTime.text = "$day $month"
+        } else {
+            tvDateTime.text = transaction.date
+        }
+
+        // Set icon dan warna berdasarkan jenis transaksi
+        if (transaction.type == "Pemasukan") {
+            // Untuk pemasukan
+            ivIcon.setImageResource(R.drawable.increase)
+            ivIcon.setBackgroundResource(R.drawable.icon_circle_blue)
+            tvAmount.text = "+ Rp ${transaction.amount.toInt()}"
+            tvAmount.setTextColor(itemView.context.getColor(android.R.color.holo_green_dark))
+        } else {
+            // Untuk pengeluaran
+            ivIcon.setImageResource(R.drawable.decrease)
+            ivIcon.setBackgroundResource(R.drawable.icon_circle_red)
+            tvAmount.text = "- Rp ${transaction.amount.toInt()}"
+            tvAmount.setTextColor(itemView.context.getColor(android.R.color.holo_red_dark))
+        }
     }
 
-    private fun formatCurrency(amount: Double): String {
-        return "Rp ${String.format(Locale("id", "ID"), "%,.0f", amount).replace(",", ".")}"
-    }
+    override fun getItemCount(): Int = transactionGroups.size
 }

@@ -1,193 +1,312 @@
 package com.rahmanda.moneyflow.home
 
 import android.app.DatePickerDialog
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Spinner
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.textfield.TextInputEditText
 import com.rahmanda.moneyflow.R
+import com.rahmanda.moneyflow.databinding.FragmentRiwayatBinding
 import com.rahmanda.moneyflow.RiwayatAdapter
 import com.rahmanda.moneyflow.Transaction
-import com.rahmanda.moneyflow.TransactionType
+import com.rahmanda.moneyflow.TransactionGroup
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 
 class RiwayatFragment : Fragment() {
 
-    private lateinit var recyclerView: RecyclerView
+    private var _binding: FragmentRiwayatBinding? = null
+    private val binding get() = _binding!!
     private lateinit var adapter: RiwayatAdapter
-    private lateinit var spinnerJenis: Spinner
-    private lateinit var editTextTanggal: TextInputEditText
+
+    // Variabel untuk filter
+    private var selectedDate: String = ""
+    private var selectedType: String = "Semua"
+
+    // Untuk date picker
     private val calendar = Calendar.getInstance()
+    private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale("id", "ID"))
+    private val displayFormat = SimpleDateFormat("dd MMM yyyy", Locale("id", "ID"))
+
+    // Data asli
+    private val allTransactionGroups = mutableListOf<TransactionGroup>()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_riwayat, container, false)
+    ): View {
+        _binding = FragmentRiwayatBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Inisialisasi views
-        recyclerView = view.findViewById(R.id.recyclerViewRiwayat)
-        spinnerJenis = view.findViewById(R.id.spinnerJenis)
-        editTextTanggal = view.findViewById(R.id.editTextTanggal)
-
-        // Setup spinner jenis transaksi
-        setupJenisSpinner()
-
-        // Setup date picker
-        setupDatePicker()
-
-        // Setup RecyclerView
+        setupFilters()
         setupRecyclerView()
-
-        // Load data contoh
-        loadSampleData()
+        loadTransactionData()
     }
 
-    private fun setupJenisSpinner() {
-        val jenisTransaksi = arrayOf(
-            "Semua Jenis",
-            "Pemasukan",
-            "Pengeluaran"
-        )
+    // ==================== SETUP FILTERS ====================
+    private fun setupFilters() {
+        setupSpinnerTanggalAwal()
+        setupSpinnerJenis()
+        setupTanggalPicker()
+    }
 
-        val adapterSpinner = ArrayAdapter(
+    // 1. SPINNER TANGGAL - SIMPLE
+    private fun setupSpinnerTanggalAwal() {
+        val adapter = ArrayAdapter(
             requireContext(),
-            android.R.layout.simple_spinner_item,
-            jenisTransaksi
+            R.layout.spinner_item_white, // LAYOUT DENGAN TEKS PUTIH
+            listOf("Pilih tanggal")
         )
-        adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerJenis.adapter = adapterSpinner
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spinnerTanggal.adapter = adapter
+
+        // Set icon warna putih
+        binding.ivIconTanggal.setColorFilter(Color.WHITE)
     }
 
-    private fun setupDatePicker() {
-        editTextTanggal.setOnClickListener {
-            showDatePickerDialog()
+    // 2. SPINNER JENIS - SIMPLE
+    private fun setupSpinnerJenis() {
+        val jenisList = listOf("Semua", "Pemasukan", "Pengeluaran")
+
+        val adapter = ArrayAdapter(
+            requireContext(),
+            R.layout.spinner_item_white, // LAYOUT DENGAN TEKS PUTIH
+            jenisList
+        )
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spinnerJenis.adapter = adapter
+
+        // Set selection default
+        binding.spinnerJenis.setSelection(0)
+
+        // Set icon awal
+        updateJenisIcon(0)
+
+        // Set listener
+        binding.spinnerJenis.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: android.widget.AdapterView<*>?) {}
+
+            override fun onItemSelected(
+                parent: android.widget.AdapterView<*>?,
+                view: android.view.View?,
+                position: Int,
+                id: Long
+            ) {
+                selectedType = parent?.getItemAtPosition(position).toString()
+                updateJenisIcon(position)
+                applyFilters()
+            }
         }
     }
 
-    private fun showDatePickerDialog() {
-        val datePickerDialog = DatePickerDialog(
+    // UPDATE ICON JENIS
+    private fun updateJenisIcon(position: Int) {
+        when (position) {
+            0 -> { // Semua
+                binding.ivIconJenis.setImageResource(R.drawable.semua)
+                binding.ivIconJenis.setColorFilter(Color.WHITE)
+            }
+            1 -> { // Pemasukan
+                binding.ivIconJenis.setImageResource(R.drawable.increase)
+                binding.ivIconJenis.setColorFilter(Color.WHITE)
+            }
+            2 -> { // Pengeluaran
+                binding.ivIconJenis.setImageResource(R.drawable.decrease)
+                binding.ivIconJenis.setColorFilter(Color.WHITE)
+            }
+        }
+    }
+
+    // 3. DATE PICKER - SIMPLE
+    private fun setupTanggalPicker() {
+        binding.spinnerTanggal.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_UP) {
+                openDatePicker()
+            }
+            true
+        }
+    }
+
+    private fun openDatePicker() {
+        val dialog = DatePickerDialog(
             requireContext(),
-            { _, year, month, dayOfMonth ->
-                // Format tanggal yang dipilih
-                val selectedDate = Calendar.getInstance()
-                selectedDate.set(year, month, dayOfMonth)
+            { _, year, month, day ->
+                // Format tanggal
+                selectedDate = String.format("%02d/%02d/%04d", day, month + 1, year)
 
-                val dateFormat = SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID"))
-                editTextTanggal.setText(dateFormat.format(selectedDate.time))
+                // Format untuk display
+                val displayDate = displayFormat.format(
+                    Calendar.getInstance().apply {
+                        set(year, month, day)
+                    }.time
+                )
 
-                // Filter data berdasarkan tanggal yang dipilih
-                filterTransactions()
+                // Update spinner
+                val adapter = ArrayAdapter(
+                    requireContext(),
+                    R.layout.spinner_item_white,
+                    listOf(displayDate)
+                )
+
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                binding.spinnerTanggal.adapter = adapter
+
+                // Apply filter
+                applyFilters()
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH)
         )
 
-        datePickerDialog.show()
+        dialog.setTitle("Pilih Tanggal")
+        // HAPUS BATASAN TANGGAL: dialog.datePicker.maxDate = System.currentTimeMillis()
+        dialog.show()
     }
 
+    // ==================== APPLY FILTERS ====================
+    private fun applyFilters() {
+        // Filter by date
+        var filteredByDate = if (selectedDate.isNotEmpty()) {
+            filterByDate(selectedDate)
+        } else {
+            allTransactionGroups
+        }
+
+        // Filter by type
+        val filteredByType = if (selectedType != "Semua") {
+            filterByType(selectedType, filteredByDate)
+        } else {
+            filteredByDate
+        }
+
+        // Update adapter
+        adapter = RiwayatAdapter(filteredByType)
+        binding.recyclerViewRiwayat.adapter = adapter
+    }
+
+    private fun filterByDate(dateStr: String): List<TransactionGroup> {
+        val dateParts = dateStr.split("/")
+        if (dateParts.size != 3) return allTransactionGroups
+
+        val selectedDay = dateParts[0] // Tanggal (dd)
+
+        return allTransactionGroups.mapNotNull { group ->
+            val filteredTransactions = group.transactions.filter { transaction ->
+                transaction.date.split(" ").getOrNull(0) == selectedDay
+            }
+
+            if (filteredTransactions.isNotEmpty()) TransactionGroup(group.date, filteredTransactions)
+            else null
+        }
+    }
+
+    private fun filterByType(type: String, groups: List<TransactionGroup>): List<TransactionGroup> {
+        return groups.mapNotNull { group ->
+            val filteredTransactions = group.transactions.filter { it.type == type }
+
+            if (filteredTransactions.isNotEmpty()) TransactionGroup(group.date, filteredTransactions)
+            else null
+        }
+    }
+
+    // ==================== SETUP RECYCLERVIEW ====================
     private fun setupRecyclerView() {
         adapter = RiwayatAdapter(emptyList())
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        recyclerView.adapter = adapter
+        binding.recyclerViewRiwayat.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerViewRiwayat.adapter = adapter
     }
 
-    private fun loadSampleData() {
-        // Data contoh seperti pada gambar
-        val sampleData = listOf(
-            createTransaction(
-                1,
-                TransactionType.EXPENSE,
-                20000.0,
-                "Makanan",
-                "Beli Nasi Padang",
-                "13-11-2025",
-                "12:30"
+    // ==================== LOAD DATA ====================
+    private fun loadTransactionData() {
+        allTransactionGroups.clear()
+        allTransactionGroups.addAll(getSampleData())
+
+        adapter = RiwayatAdapter(allTransactionGroups)
+        binding.recyclerViewRiwayat.adapter = adapter
+    }
+
+    private fun getSampleData(): List<TransactionGroup> {
+        return listOf(
+            TransactionGroup(
+                date = "13 November 2025",
+                transactions = listOf(
+                    Transaction(
+                        id = 1,
+                        date = "13 November 2025 12.30",
+                        type = "Pengeluaran",
+                        category = "Beli Nasi Padang",
+                        description = "RPA v 1.4",
+                        amount = 20000.0
+                    ),
+                    Transaction(
+                        id = 2,
+                        date = "13 November 2025",
+                        type = "Pengeluaran",
+                        category = "Bayar Gojek",
+                        description = "",
+                        amount = 15000.0
+                    ),
+                    Transaction(
+                        id = 3,
+                        date = "13 November 2025",
+                        type = "Pengeluaran",
+                        category = "Beli Pulsa",
+                        description = "RPPC v 6.0",
+                        amount = 20000.0
+                    ),
+                    Transaction(
+                        id = 4,
+                        date = "13 November 2025",
+                        type = "Pemasukan",
+                        category = "Tabungan",
+                        description = "MEPC v 7.0",
+                        amount = 100000.0
+                    )
+                )
             ),
-            createTransaction(
-                2,
-                TransactionType.EXPENSE,
-                25000.0,
-                "Transportasi",
-                "Bayar Gojek",
-                "13-11-2025",
-                "10:30"
-            ),
-            createTransaction(
-                3,
-                TransactionType.EXPENSE,
-                20000.0,
-                "Komunikasi",
-                "Beli Pulsa",
-                "13-11-2025",
-                "08:00"
-            ),
-            createTransaction(
-                4,
-                TransactionType.INCOME,
-                100000.0,
-                "Tabungan",
-                "Tabungan",
-                "13-11-2025",
-                "07:00"
-            ),
-            createTransaction(
-                5,
-                TransactionType.EXPENSE,
-                50000.0,
-                "Utilities",
-                "Bayar Listrik",
-                "12-11-2025",
-                "18:15"
-            ),
-            createTransaction(
-                6,
-                TransactionType.INCOME,
-                50000.0,
-                "Tabungan",
-                "Tabungan",
-                "12-11-2025",
-                "18:00"
+            TransactionGroup(
+                date = "12 November 2025",
+                transactions = listOf(
+                    Transaction(
+                        id = 5,
+                        date = "12 November 2025",
+                        type = "Pengeluaran",
+                        category = "RPA v 21.14",
+                        description = "DTAK v 8.0",
+                        amount = 50000.0
+                    ),
+                    Transaction(
+                        id = 6,
+                        date = "12 November 2025",
+                        type = "Pemasukan",
+                        category = "Terjorya",
+                        description = "DTAK v 6.0",
+                        amount = 50000.0
+                    )
+                )
             )
         )
-
-        adapter.updateData(sampleData)
     }
 
-    private fun filterTransactions() {
-        // Implementasi filter berdasarkan tanggal dan jenis transaksi
-        val selectedJenis = spinnerJenis.selectedItemPosition
-        val selectedDate = editTextTanggal.text.toString()
-
-        // Filter logic bisa ditambahkan di sini
-        // Untuk sekarang, tampilkan semua data
-        loadSampleData()
-    }
-
-    private fun createTransaction(
-        id: Int,
-        type: TransactionType,
-        amount: Double,
-        category: String,
-        description: String,
-        dateStr: String,
-        time: String
-    ): Transaction {
-        val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
-        val date = dateFormat.parse(dateStr) ?: Date()
-
-        return Transaction(id, type, amount, description, category, date, time)
+    // ==================== CLEANUP ====================
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingHorizontal="16dp"
+    android:paddingTop="20dp">
+
+    <!-- TANGGAL HEADER -->
+    <TextView
+        android:id="@+id/tvDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="13 November 2025"
+        android:textSize="14sp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:paddingBottom="8dp"
+        android:background="#F8F9FA"
+        android:paddingTop="10dp"
+        android:paddingStart="20dp"/>
+
+    <!-- LIST ITEM TRANSAKSI AKAN DITAMBAHKAN DI SINI -->
+    <LinearLayout
+        android:id="@+id/containerItems"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@android:color/white"
+        android:paddingVertical="8dp">
+
+        <!-- Item akan ditambahkan secara dinamis -->
+
+    </LinearLayout>
+
+</LinearLayout>

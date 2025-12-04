@@ -1,18 +1,20 @@
 package com.rahmanda.moneyflow
 
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.MotionEvent
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.rahmanda.moneyflow.R
+import com.rahmanda.moneyflow.home.HomeActivity
 import java.text.NumberFormat
 import java.util.*
 
 class InputActivity : AppCompatActivity() {
 
+    private lateinit var btnClose: ImageView
     private lateinit var amount: EditText
     private lateinit var spinnerKategori: Spinner
     private lateinit var spinnerTanggal: Spinner
@@ -28,6 +30,7 @@ class InputActivity : AppCompatActivity() {
         setContentView(R.layout.activity_input)
 
         initViews()
+        setupCloseButton()
         setupSpinnerKategori()
         setupSpinnerTanggalAwal()
         setupTanggalPicker()
@@ -35,7 +38,11 @@ class InputActivity : AppCompatActivity() {
         setupButtons()
     }
 
+    /* ======================================================
+        INISIALISASI VIEW
+    ====================================================== */
     private fun initViews() {
+        btnClose = findViewById(R.id.btnClose)
         amount = findViewById(R.id.textAmount)
         spinnerKategori = findViewById(R.id.spinnerKategori)
         spinnerTanggal = findViewById(R.id.spinnerTanggal)
@@ -44,41 +51,52 @@ class InputActivity : AppCompatActivity() {
         buttonSelesai = findViewById(R.id.buttonSelesai)
     }
 
-    // Spinner kategori sekarang pakai layout custom (putih)
+    /* ======================================================
+        1. TOMBOL CLOSE
+    ====================================================== */
+    private fun setupCloseButton() {
+        btnClose.setOnClickListener {
+            finish()
+        }
+    }
+
+    /* ======================================================
+        2. SPINNER PEMASUKAN / PENGELUARAN
+    ====================================================== */
     private fun setupSpinnerKategori() {
         val kategoriAdapter = ArrayAdapter(
             this,
             R.layout.spinner_item_white,
             listOf("Pemasukan", "Pengeluaran")
         )
-        kategoriAdapter.setDropDownViewResource(R.layout.spinner_dropdown_white)
 
+        kategoriAdapter.setDropDownViewResource(R.layout.spinner_dropdown_white)
         spinnerKategori.adapter = kategoriAdapter
 
         spinnerKategori.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
-
-            override fun onItemSelected(
-                parent: AdapterView<*>?, view: android.view.View?,
-                position: Int, id: Long
-            ) {
+            override fun onItemSelected(parent: AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {
                 selectedType = parent?.getItemAtPosition(position).toString()
             }
         }
     }
 
-    // Spinner tanggal default (tulisan putih)
+    /* ======================================================
+        3. SPINNER TANGGAL DEFAULT
+    ====================================================== */
     private fun setupSpinnerTanggalAwal() {
-        val tanggalAdapter = ArrayAdapter(
+        val adapter = ArrayAdapter(
             this,
             R.layout.spinner_item_white,
             listOf("Pilih tanggal")
         )
-        tanggalAdapter.setDropDownViewResource(R.layout.spinner_dropdown_white)
-
-        spinnerTanggal.adapter = tanggalAdapter
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_white)
+        spinnerTanggal.adapter = adapter
     }
 
+    /* ======================================================
+        4. DATE PICKER
+    ====================================================== */
     private fun setupTanggalPicker() {
         spinnerTanggal.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_UP) openDatePicker()
@@ -100,7 +118,6 @@ class InputActivity : AppCompatActivity() {
                     listOf(selectedDate)
                 )
                 adapter.setDropDownViewResource(R.layout.spinner_dropdown_white)
-
                 spinnerTanggal.adapter = adapter
             },
             c.get(Calendar.YEAR),
@@ -111,6 +128,9 @@ class InputActivity : AppCompatActivity() {
         dialog.show()
     }
 
+    /* ======================================================
+        5. FORMAT NOMINAL Rp
+    ====================================================== */
     private fun setupAmountFormatter() {
         amount.addTextChangedListener(object : TextWatcher {
 
@@ -124,15 +144,14 @@ class InputActivity : AppCompatActivity() {
 
                 if (clean.isNotEmpty()) {
                     val number = clean.toLong()
-                    val formatted = "Rp " + NumberFormat.getNumberInstance(Locale("id", "ID"))
-                        .format(number)
+                    val formatted = "Rp " +
+                            NumberFormat.getNumberInstance(Locale("id", "ID")).format(number)
 
                     amount.setText(formatted)
                     amount.setSelection(formatted.length)
                 } else {
                     amount.setText("")
                 }
-
                 isEditing = false
             }
 
@@ -141,18 +160,17 @@ class InputActivity : AppCompatActivity() {
         })
     }
 
+    /* ======================================================
+        6. TOMBOL: TAMBAH LAGI & SELESAI
+    ====================================================== */
     private fun setupButtons() {
 
+        /* Tombol TAMBAH LAGI */
         buttonTambahLagi.setOnClickListener {
+            val nominal = amount.text.toString().trim()
 
-            val nilaiInput = amount.text.toString().trim()
-
-            if (nilaiInput.isNotEmpty()) {
-                Toast.makeText(
-                    this,
-                    "Transaksi sebesar $nilaiInput tersimpan",
-                    Toast.LENGTH_SHORT
-                ).show()
+            if (nominal.isNotEmpty()) {
+                Toast.makeText(this, "Transaksi sebesar $nominal tersimpan", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(this, "Tidak ada nominal yang diinput", Toast.LENGTH_SHORT).show()
             }
@@ -161,12 +179,26 @@ class InputActivity : AppCompatActivity() {
             amount.setText("")
             amount.hint = "Rp 0"
             editDeskripsi.setText("")
-
-            setupSpinnerTanggalAwal() // reset tanggal putih kembali
+            setupSpinnerTanggalAwal()
         }
 
+        /* ============================
+            TOMBOL SELESAI
+        ============================ */
         buttonSelesai.setOnClickListener {
-            Toast.makeText(this, "Selesai", Toast.LENGTH_SHORT).show()
+
+            // Validasi simple
+            if (amount.text.toString().isEmpty()) {
+                Toast.makeText(this, "Nominal belum diisi!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // Setelah data tersimpan → arahkan ke MainActivity (tab Riwayat)
+            val intent = Intent(this, HomeActivity::class.java)
+            intent.putExtra("open_riwayat", true)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+
             finish()
         }
     }

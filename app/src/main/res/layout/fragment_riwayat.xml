@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_riwayat"
-    tools:context=".RiwayatAdapter">
+    tools:context=".home.RiwayatFragment">
 
     <!-- Header: Riwayat Transaksi (Tengah Atas) -->
     <TextView
@@ -22,7 +22,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp" />
 
-    <!-- Container untuk 2 filter -->
+    <!-- Container untuk 2 filter dalam satu baris -->
     <LinearLayout
         android:id="@+id/layoutFilters"
         android:layout_width="0dp"
@@ -32,41 +32,93 @@
         app:layout_constraintTop_toBottomOf="@id/tvTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp">
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:gravity="center_vertical">
 
-        <!-- TextInputLayout Kiri: Tanggal (TANPA PANAH) -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputTanggal"
+        <!-- SPINNER TANGGAL (Kiri) -->
+        <LinearLayout
+            android:id="@+id/layoutTanggal"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_weight="1"
-            android:layout_marginEnd="8dp"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-            app:endIconMode="clear_text"
-            app:startIconDrawable="@android:drawable/ic_menu_my_calendar">
+            android:background="@drawable/bg_spinner"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:layout_marginEnd="8dp">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editTextTanggal"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:hint="Pilih Tanggal"
-                android:text="Semua Bulan"
-                android:textSize="14sp"
-                android:focusable="false"
-                android:clickable="true"
-                android:cursorVisible="false" />
+            <!-- Ikon kalender -->
+            <ImageView
+                android:id="@+id/ivIconTanggal"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_calendar"
+                android:layout_marginEnd="8dp"
+                />
 
-        </com.google.android.material.textfield.TextInputLayout>
+            <!-- SPINNER untuk tanggal -->
+            <Spinner
+                android:id="@+id/spinnerTanggal"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:spinnerMode="dropdown"
+                android:popupBackground="@android:color/white"
+                android:popupTheme="@style/SpinnerPopupWhite"/>
 
-        <!-- Spinner Kanan: Jenis Transaksi (DENGAN PANAH) -->
-        <Spinner
-            android:id="@+id/spinnerJenis"
+            <!-- Ikon arrow dropdown -->
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/dropdown"
+                />
+
+        </LinearLayout>
+
+        <!-- SPINNER JENIS (Kanan) -->
+        <LinearLayout
+            android:id="@+id/layoutJenis"
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
             android:layout_weight="1"
-            android:paddingStart="16dp"
-            android:layout_marginStart="8dp" />
+            android:background="@drawable/bg_spinner"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:layout_marginStart="8dp">
+
+            <!-- Ikon jenis (pemasukan/pengeluaran) -->
+            <ImageView
+                android:id="@+id/ivIconJenis"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/decrease"
+                android:layout_marginEnd="8dp"
+                />
+
+            <!-- SPINNER untuk pilih jenis -->
+            <Spinner
+                android:id="@+id/spinnerJenis"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:spinnerMode="dropdown"
+                android:popupBackground="@android:color/white"
+                android:popupTheme="@style/SpinnerPopupWhite"/>
+
+            <!-- Ikon arrow dropdown -->
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/dropdown"
+                />
+
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -80,8 +132,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/card_rounded"
+        />
+    <!-- Styling item (background, elevation, padding) harus ada di item_transaction.xml, BUKAN DI SINI -->
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

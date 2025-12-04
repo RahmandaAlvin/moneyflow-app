@@ -31,33 +31,79 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp"/>
 
-    <!-- Dropdown Kategori -->
-    <Spinner
-        android:id="@+id/spinnerKategori"
+    <!-- Dropdown Kategori + Ikon -->
+    <LinearLayout
+        android:id="@+id/layoutKategori"
         android:layout_width="140dp"
         android:layout_height="40dp"
         android:background="@drawable/bg_spinner"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
-        android:popupTheme="@style/SpinnerPopupWhite"
         app:layout_constraintTop_toBottomOf="@id/textHeader"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"/>
+        android:layout_marginStart="16dp">
 
-    <!-- Dropdown Tanggal -->
-    <Spinner
-        android:id="@+id/spinnerTanggal"
+        <!-- Ikon kategori -->
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/decrease"
+            android:layout_marginEnd="6dp"/>
+
+        <Spinner
+            android:id="@+id/spinnerKategori"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:popupTheme="@style/SpinnerPopupWhite"/>
+
+        <!-- Ikon arrow dropdown -->
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/dropdown"/>
+    </LinearLayout>
+
+    <!-- Dropdown Tanggal + Ikon -->
+    <LinearLayout
+        android:id="@+id/layoutTanggal"
         android:layout_width="140dp"
         android:layout_height="40dp"
         android:background="@drawable/bg_spinner"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
-        android:popupTheme="@style/SpinnerPopupWhite"
         app:layout_constraintTop_toBottomOf="@id/textHeader"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"/>
+        android:layout_marginEnd="16dp">
+
+        <!-- Ikon kalender -->
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/ic_calendar"
+            android:layout_marginEnd="6dp"/>
+
+        <Spinner
+            android:id="@+id/spinnerTanggal"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:popupTheme="@style/SpinnerPopupWhite"/>
+
+        <!-- Ikon arrow -->
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/dropdown"/>
+    </LinearLayout>
 
     <!-- Input Nominal -->
     <EditText
@@ -73,13 +119,13 @@
         android:background="@android:color/transparent"
         android:padding="0dp"
         android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@id/spinnerKategori"
+        app:layout_constraintTop_toBottomOf="@id/layoutKategori"
         app:layout_constraintBottom_toTopOf="@id/bottomCard"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="70dp"/>
 
-    <!-- Bottom Card (dengan background shape custom) -->
+    <!-- Bottom Card -->
     <FrameLayout
         android:id="@+id/bottomCard"
         android:layout_width="match_parent"
@@ -125,11 +171,9 @@
                     android:layout_height="50dp"
                     android:layout_weight="1"
                     android:background="@drawable/btn_outline"
-                    android:backgroundTint="@null"
                     android:text="Tambah Lagi"
                     android:textColor="#0C1A57"
-                    android:textStyle="bold"
-                    app:backgroundTint="@null" />
+                    android:textStyle="bold"/>
 
                 <Space
                     android:layout_width="12dp"

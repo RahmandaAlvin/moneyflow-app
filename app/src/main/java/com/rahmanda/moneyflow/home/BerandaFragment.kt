@@ -23,8 +23,7 @@ class BerandaFragment : Fragment() {
     private lateinit var textPengeluaran: TextView
     private lateinit var textLihatSemua: TextView
     private lateinit var iconMata: ImageView
-    private lateinit var cardPemasukan: View
-    private lateinit var cardPengeluaran: View
+    // Card pemasukan & pengeluaran TIDAK PERLU di-deklarasikan lagi karena tidak akan dipakai untuk click
 
     private var isSaldoVisible = true
     private lateinit var sharedPrefManager: SharedPrefManager
@@ -56,8 +55,7 @@ class BerandaFragment : Fragment() {
         textPengeluaran = view.findViewById(R.id.textPengeluaran)
         textLihatSemua = view.findViewById(R.id.textLihatSemua)
         iconMata = view.findViewById(R.id.iconMata)
-        cardPemasukan = view.findViewById(R.id.cardPemasukan)
-        cardPengeluaran = view.findViewById(R.id.cardPengeluaran)
+        // TIDAK PERLU mengambil cardPemasukan dan cardPengeluaran karena tidak akan diklik
     }
 
     private fun setupFunctions() {
@@ -81,20 +79,13 @@ class BerandaFragment : Fragment() {
     }
 
     private fun setupClickListeners() {
-        // 1. Lihat Semua Transaksi -> Navigasi ke RiwayatFragment
+        // HANYA textLihatSemua yang bisa diklik (ke RiwayatFragment)
         textLihatSemua.setOnClickListener {
             findNavController().navigate(R.id.riwayatFragment)
         }
 
-        // 2. Card Pemasukan -> Navigasi ke InputFragment
-        cardPemasukan.setOnClickListener {
-            findNavController().navigate(R.id.inputFragment)
-        }
-
-        // 3. Card Pengeluaran -> Navigasi ke InputFragment
-        cardPengeluaran.setOnClickListener {
-            findNavController().navigate(R.id.inputFragment)
-        }
+        // HAPUS click listener untuk cardPemasukan & cardPengeluaran
+        // Karena user akan ke InputActivity via Bottom Navigation
     }
 
     private fun updateDisplayData() {

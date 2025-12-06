@@ -8,7 +8,6 @@
     android:background="@drawable/bg_riwayat"
     tools:context=".home.RiwayatFragment">
 
-    <!-- Header: Riwayat Transaksi (Tengah Atas) -->
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
@@ -22,7 +21,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp" />
 
-    <!-- Container untuk 2 filter dalam satu baris -->
     <LinearLayout
         android:id="@+id/layoutFilters"
         android:layout_width="0dp"
@@ -36,7 +34,6 @@
         android:layout_marginEnd="24dp"
         android:gravity="center_vertical">
 
-        <!-- SPINNER TANGGAL (Kiri) -->
         <LinearLayout
             android:id="@+id/layoutTanggal"
             android:layout_width="0dp"
@@ -45,40 +42,39 @@
             android:background="@drawable/bg_spinner"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
             android:layout_marginEnd="8dp">
 
-            <!-- Ikon kalender -->
             <ImageView
                 android:id="@+id/ivIconTanggal"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:src="@drawable/ic_calendar"
+                android:layout_marginStart="12dp"
                 android:layout_marginEnd="8dp"
                 />
 
-            <!-- SPINNER untuk tanggal -->
-            <Spinner
-                android:id="@+id/spinnerTanggal"
+            <TextView
+                android:id="@+id/textViewTanggal"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@android:color/transparent"
-                android:spinnerMode="dropdown"
-                android:popupBackground="@android:color/white"
-                android:popupTheme="@style/SpinnerPopupWhite"/>
+                android:gravity="center_vertical"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:text="Pilih tanggal"
+                android:maxLines="1"
+                android:ellipsize="end" />
 
-            <!-- Ikon arrow dropdown -->
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:src="@drawable/dropdown"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="12dp"
                 />
 
         </LinearLayout>
 
-        <!-- SPINNER JENIS (Kanan) -->
         <LinearLayout
             android:id="@+id/layoutJenis"
             android:layout_width="0dp"
@@ -87,42 +83,41 @@
             android:background="@drawable/bg_spinner"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
             android:layout_marginStart="8dp">
 
-            <!-- Ikon jenis (pemasukan/pengeluaran) -->
             <ImageView
                 android:id="@+id/ivIconJenis"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:src="@drawable/decrease"
+                android:layout_marginStart="12dp"
                 android:layout_marginEnd="8dp"
                 />
 
-            <!-- SPINNER untuk pilih jenis -->
-            <Spinner
-                android:id="@+id/spinnerJenis"
+            <TextView
+                android:id="@+id/textViewJenis"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@android:color/transparent"
-                android:spinnerMode="dropdown"
-                android:popupBackground="@android:color/white"
-                android:popupTheme="@style/SpinnerPopupWhite"/>
+                android:gravity="center_vertical"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:text="Semua"
+                android:maxLines="1"
+                android:ellipsize="end" />
 
-            <!-- Ikon arrow dropdown -->
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:src="@drawable/dropdown"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="12dp"
                 />
 
         </LinearLayout>
 
     </LinearLayout>
 
-    <!-- RecyclerView untuk daftar transaksi -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewRiwayat"
         android:layout_width="0dp"
@@ -137,7 +132,6 @@
         android:layout_marginBottom="16dp"
         android:background="@drawable/card_rounded"
         />
-    <!-- Styling item (background, elevation, padding) harus ada di item_transaction.xml, BUKAN DI SINI -->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

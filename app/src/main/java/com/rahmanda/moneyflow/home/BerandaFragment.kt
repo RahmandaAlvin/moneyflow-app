@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.rahmanda.moneyflow.R
 import com.rahmanda.moneyflow.data.SharedPrefManager
+import com.rahmanda.moneyflow.data.TransactionManager
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -23,7 +24,8 @@ class BerandaFragment : Fragment() {
     private lateinit var textPengeluaran: TextView
     private lateinit var textLihatSemua: TextView
     private lateinit var iconMata: ImageView
-    // Card pemasukan & pengeluaran TIDAK PERLU di-deklarasikan lagi karena tidak akan dipakai untuk click
+    private lateinit var cardPemasukan: View
+    private lateinit var cardPengeluaran: View
 
     private var isSaldoVisible = true
     private lateinit var sharedPrefManager: SharedPrefManager
@@ -32,10 +34,13 @@ class BerandaFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate layout fragment_beranda yang sudah berisi layout lengkap
         val view = inflater.inflate(R.layout.fragment_beranda, container, false)
 
         sharedPrefManager = SharedPrefManager(requireContext())
+
+        // PENTING: Inisialisasi TransactionManager jika belum
+        TransactionManager.initialize(requireContext())
+
         initViews(view)
         setupFunctions()
         return view
@@ -55,14 +60,21 @@ class BerandaFragment : Fragment() {
         textPengeluaran = view.findViewById(R.id.textPengeluaran)
         textLihatSemua = view.findViewById(R.id.textLihatSemua)
         iconMata = view.findViewById(R.id.iconMata)
-        // TIDAK PERLU mengambil cardPemasukan dan cardPengeluaran karena tidak akan diklik
+        cardPemasukan = view.findViewById(R.id.cardPemasukan)
+        cardPengeluaran = view.findViewById(R.id.cardPengeluaran)
     }
 
     private fun setupFunctions() {
         setupCurrentDate()
+        setupWelcomeText() // Fungsi baru untuk set username
         setupSaldoToggle()
         setupClickListeners()
-        updateDisplayData() // Tampilkan data pertama kali
+        // updateDisplayData() dipanggil di onResume
+    }
+
+    private fun setupWelcomeText() {
+        val username = sharedPrefManager.getUsername() ?: "Pengguna" // Ambil username yang login
+        textWelcome.text = "Selamat Datang, $username"
     }
 
     private fun setupCurrentDate() {
@@ -79,42 +91,55 @@ class BerandaFragment : Fragment() {
     }
 
     private fun setupClickListeners() {
-        // HANYA textLihatSemua yang bisa diklik (ke RiwayatFragment)
+        // 1. Lihat Semua Transaksi -> Navigasi ke RiwayatFragment (sudah benar)
         textLihatSemua.setOnClickListener {
+            // Kita asumsikan ini berjalan di Navigation Component
             findNavController().navigate(R.id.riwayatFragment)
         }
 
-        // HAPUS click listener untuk cardPemasukan & cardPengeluaran
-        // Karena user akan ke InputActivity via Bottom Navigation
+        // PENTING: Menghapus navigasi ke InputFragment dari Beranda
+        // Karena InputFragment (InputActivity) diakses dari Tombol Tengah di HomeActivity
+        // Jika Anda ingin tetap mempertahankan navigasi ini, biarkan saja
+        // Jika tidak, Anda bisa menghapus cardPemasukan dan cardPengeluaran click listener.
+
+        /* cardPemasukan.setOnClickListener {
+             // Logic untuk ke InputActivity
+         }
+
+         cardPengeluaran.setOnClickListener {
+             // Logic untuk ke InputActivity
+         } */
     }
 
     private fun updateDisplayData() {
-        val data = sharedPrefManager.getTransactionData()
-        updateData(data.saldo, data.pemasukan, data.pengeluaran)
+        // Ambil data total dari TransactionManager
+        val (saldo, pemasukan, pengeluaran) = TransactionManager.getTotals()
+        updateData(saldo, pemasukan, pengeluaran)
     }
 
-    private fun updateData(saldo: Int, pemasukan: Int, pengeluaran: Int) {
-        // Format angka ke Rupiah
+    private fun updateData(saldo: Double, pemasukan: Double, pengeluaran: Double) {
+        // Format angka ke Rupiah (hanya tampilkan integer)
         val format = NumberFormat.getNumberInstance(Locale("id", "ID"))
 
-        textPemasukan.text = "Rp ${format.format(pemasukan)}"
-        textPengeluaran.text = "Rp ${format.format(pengeluaran)}"
+        textPemasukan.text = "Rp ${format.format(pemasukan.toInt())}"
+        textPengeluaran.text = "Rp ${format.format(pengeluaran.toInt())}"
         updateSaldoDisplay(saldo)
+
+        // HIDE TRANSAKSI TERAKHIR JIKA KOSONG (Logic ini biasanya di RecyclerView)
+        // Karena Transaksi Terakhir di layout Anda adalah hardcoded, kita abaikan dulu
+        // atau kita set visibility ke GONE jika TransactionManager.getAllTransactions().isEmpty()
     }
 
-    private fun updateSaldoDisplay(saldo: Int? = null) {
-        val currentSaldo = saldo ?: sharedPrefManager.getTransactionData().saldo
+    private fun updateSaldoDisplay(saldo: Double? = null) {
+        val currentSaldo = saldo ?: TransactionManager.getTotals().first
         val format = NumberFormat.getNumberInstance(Locale("id", "ID"))
 
         textSaldo.text = if (isSaldoVisible) {
-            "Rp ${format.format(currentSaldo)}"
+            "Rp ${format.format(currentSaldo.toLong())}"
         } else {
             "Rp ••••••"
         }
     }
 
-    fun updateFromInput(jumlah: Int, isPemasukan: Boolean) {
-        sharedPrefManager.updateSaldo(jumlah, isPemasukan)
-        updateDisplayData()
-    }
+    // updateFromInput tidak lagi diperlukan di sini karena data diakses melalui TransactionManager
 }

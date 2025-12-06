@@ -17,16 +17,6 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-
     // TAMBAHKAN BUILD FEATURES
     buildFeatures {
         viewBinding = true  // Untuk View Binding
@@ -58,6 +48,9 @@ dependencies {
 
     // TAMBAHKAN MATERIAL COMPONENTS untuk TextInputLayout
     implementation("com.google.android.material:material:1.11.0")
+
+    // >>> DEPENDENSI YANG DIBUTUHKAN UNTUK TRANSACTION MANAGER (Gson)
+    implementation ("com.google.code.gson:gson:2.10.1")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -2,7 +2,6 @@ package com.rahmanda.moneyflow
 
 import java.util.Date
 
-// Model data untuk menyimpan setiap transaksi
 data class Transaction(
     val id: Int,
     val date: Date, // Menggunakan Date object untuk sorting dan grouping yang akurat

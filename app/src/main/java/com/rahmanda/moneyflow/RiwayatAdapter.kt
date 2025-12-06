@@ -26,14 +26,8 @@ class RiwayatAdapter(private val transactionGroups: List<TransactionGroup>) :
 
     override fun onBindViewHolder(holder: DateGroupViewHolder, position: Int) {
         val group = transactionGroups[position]
-
-        // Set tanggal
         holder.tvDate.text = group.date
-
-        // Clear container
         holder.containerItems.removeAllViews()
-
-        // Tambahkan item transaksi ke container
         group.transactions.forEach { transaction ->
             val itemView = LayoutInflater.from(holder.itemView.context)
                 .inflate(R.layout.item_transaction, holder.containerItems, false)
@@ -50,34 +44,21 @@ class RiwayatAdapter(private val transactionGroups: List<TransactionGroup>) :
         val tvAmount: TextView = itemView.findViewById(R.id.tvAmount)
         val tvDateTime: TextView = itemView.findViewById(R.id.tvDateTime)
 
-        // Set data
         tvCategory.text = transaction.category
         tvDescription.text = transaction.type
-
-        // --- PERBAIKAN LOGIKA TANGGAL (Mengatasi Type Mismatch) ---
-        // Format tanggal dari objek Date menjadi "dd MMM"
         val timeFormat = SimpleDateFormat("dd MMM", Locale("id", "ID"))
         val formattedTime = timeFormat.format(transaction.date)
-
-        // Menggunakan uppercase() (non-deprecated)
         tvDateTime.text = formattedTime.uppercase(Locale.getDefault())
-        // --- END PERBAIKAN LOGIKA TANGGAL ---
 
-
-        // Set icon dan warna berdasarkan jenis transaksi
         if (transaction.type == "Pemasukan") {
-            // Untuk pemasukan
             ivIcon.setImageResource(R.drawable.increase)
             ivIcon.setBackgroundResource(R.drawable.icon_circle_blue)
             tvAmount.text = "+ Rp ${transaction.amount.toInt()}"
-            // Menggunakan warna biru sistem
             tvAmount.setTextColor(itemView.context.getColor(android.R.color.holo_blue_dark))
         } else {
-            // Untuk pengeluaran
             ivIcon.setImageResource(R.drawable.decrease)
             ivIcon.setBackgroundResource(R.drawable.icon_circle_red)
             tvAmount.text = "- Rp ${transaction.amount.toInt()}"
-            // Menggunakan warna merah sistem
             tvAmount.setTextColor(itemView.context.getColor(android.R.color.holo_red_dark))
         }
     }

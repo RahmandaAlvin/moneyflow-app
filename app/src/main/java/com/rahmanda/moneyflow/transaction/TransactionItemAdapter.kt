@@ -26,7 +26,7 @@ class TransactionItemAdapter(private val transactions: List<Transaction>) :
         val transaction = transactions[position]
 
         holder.tvType.text = transaction.type
-        holder.tvDescription.text = transaction.description
+    //    holder.tvDescription.text = transaction.description
         holder.tvAmount.text = "Rp ${transaction.amount.toInt()}"
 
         // Set warna berdasarkan jenis

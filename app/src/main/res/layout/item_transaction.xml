@@ -18,7 +18,7 @@
 
     <!-- ICON LINGKARAN -->
     <ImageView
-        android:id="@+id/ivIcon"
+        android:id="@+id/tvIcon"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:src="@drawable/decrease"
@@ -76,7 +76,7 @@
             android:id="@+id/tvDateTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="13 NOV 12.30"
+            android:text="13 NOV"
             android:textSize="12sp"
             android:textColor="#666666"
             android:layout_marginTop="2dp"

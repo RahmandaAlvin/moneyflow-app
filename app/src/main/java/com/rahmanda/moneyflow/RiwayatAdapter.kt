@@ -7,6 +7,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.rahmanda.moneyflow.R
+import java.text.SimpleDateFormat // Diperlukan untuk format tanggal
+import java.util.Locale // Diperlukan untuk format tanggal
 
 class RiwayatAdapter(private val transactionGroups: List<TransactionGroup>) :
     RecyclerView.Adapter<RiwayatAdapter.DateGroupViewHolder>() {
@@ -42,7 +44,7 @@ class RiwayatAdapter(private val transactionGroups: List<TransactionGroup>) :
     }
 
     private fun bindTransactionItem(itemView: View, transaction: Transaction) {
-        val ivIcon: ImageView = itemView.findViewById(R.id.ivIcon)
+        val ivIcon: ImageView = itemView.findViewById(R.id.tvIcon)
         val tvCategory: TextView = itemView.findViewById(R.id.tvCategory)
         val tvDescription: TextView = itemView.findViewById(R.id.tvDescription)
         val tvAmount: TextView = itemView.findViewById(R.id.tvAmount)
@@ -52,16 +54,15 @@ class RiwayatAdapter(private val transactionGroups: List<TransactionGroup>) :
         tvCategory.text = transaction.category
         tvDescription.text = transaction.type
 
-        // Format tanggal untuk tvDateTime (ambil hari dan bulan saja)
-        // Contoh: "13 November 2025" -> "13 NOV"
-        val dateParts = transaction.date.split(" ")
-        if (dateParts.size >= 2) {
-            val day = dateParts[0]
-            val month = dateParts[1].take(3).toUpperCase() // Ambil 3 huruf pertama
-            tvDateTime.text = "$day $month"
-        } else {
-            tvDateTime.text = transaction.date
-        }
+        // --- PERBAIKAN LOGIKA TANGGAL (Mengatasi Type Mismatch) ---
+        // Format tanggal dari objek Date menjadi "dd MMM"
+        val timeFormat = SimpleDateFormat("dd MMM", Locale("id", "ID"))
+        val formattedTime = timeFormat.format(transaction.date)
+
+        // Menggunakan uppercase() (non-deprecated)
+        tvDateTime.text = formattedTime.uppercase(Locale.getDefault())
+        // --- END PERBAIKAN LOGIKA TANGGAL ---
+
 
         // Set icon dan warna berdasarkan jenis transaksi
         if (transaction.type == "Pemasukan") {
@@ -69,12 +70,14 @@ class RiwayatAdapter(private val transactionGroups: List<TransactionGroup>) :
             ivIcon.setImageResource(R.drawable.increase)
             ivIcon.setBackgroundResource(R.drawable.icon_circle_blue)
             tvAmount.text = "+ Rp ${transaction.amount.toInt()}"
-            tvAmount.setTextColor(itemView.context.getColor(android.R.color.holo_green_dark))
+            // Menggunakan warna biru sistem
+            tvAmount.setTextColor(itemView.context.getColor(android.R.color.holo_blue_dark))
         } else {
             // Untuk pengeluaran
             ivIcon.setImageResource(R.drawable.decrease)
             ivIcon.setBackgroundResource(R.drawable.icon_circle_red)
             tvAmount.text = "- Rp ${transaction.amount.toInt()}"
+            // Menggunakan warna merah sistem
             tvAmount.setTextColor(itemView.context.getColor(android.R.color.holo_red_dark))
         }
     }

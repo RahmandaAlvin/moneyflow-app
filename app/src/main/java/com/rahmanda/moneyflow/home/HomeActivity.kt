@@ -27,10 +27,8 @@ class HomeActivity : AppCompatActivity() {
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigation)
         val navController = findNavController(R.id.fragmentContainerView)
 
-        // Tetap hubungkan dengan fragment nav
         bottomNavigationView.setupWithNavController(navController)
 
-        // Override klik untuk membuka InputActivity
         val openRiwayat = intent.getBooleanExtra("open_riwayat", false)
         if (openRiwayat) {
             bottomNavigationView.selectedItemId = R.id.riwayatFragment
@@ -38,11 +36,10 @@ class HomeActivity : AppCompatActivity() {
 
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                // Inilah ID fragment input kamu
-                R.id.inputFragment -> {
+                R.id.InputActivity -> {
                     val intent = Intent(this, InputActivity::class.java)
                     startActivity(intent)
-                    false   // Jangan pindah fragment
+                    false
                 }
 
                 else -> {

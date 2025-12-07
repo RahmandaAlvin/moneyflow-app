@@ -26,10 +26,8 @@ class TransactionItemAdapter(private val transactions: List<Transaction>) :
         val transaction = transactions[position]
 
         holder.tvType.text = transaction.type
-    //    holder.tvDescription.text = transaction.description
         holder.tvAmount.text = "Rp ${transaction.amount.toInt()}"
 
-        // Set warna berdasarkan jenis
         if (transaction.type == "Pemasukan") {
             holder.tvType.setTextColor(holder.itemView.context.getColor(R.color.green))
             holder.tvAmount.setTextColor(holder.itemView.context.getColor(R.color.green))
@@ -38,7 +36,6 @@ class TransactionItemAdapter(private val transactions: List<Transaction>) :
             holder.tvAmount.setTextColor(holder.itemView.context.getColor(R.color.red))
         }
 
-        // Category
         if (transaction.category.isNotEmpty()) {
             holder.tvCategory.text = transaction.category
             holder.tvCategory.visibility = View.VISIBLE

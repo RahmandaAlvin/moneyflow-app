@@ -20,7 +20,6 @@
         android:paddingTop="10dp"
         android:paddingStart="10dp"/>
 
-    <!-- LIST ITEM TRANSAKSI AKAN DITAMBAHKAN DI SINI -->
     <LinearLayout
         android:id="@+id/containerItems"
         android:layout_width="match_parent"
@@ -28,8 +27,6 @@
         android:orientation="vertical"
         android:background="@android:color/white"
         android:paddingVertical="8dp">
-
-        <!-- Item akan ditambahkan secara dinamis -->
 
     </LinearLayout>
 

@@ -10,11 +10,12 @@
         android:name="com.rahmanda.moneyflow.home.BerandaFragment"
         android:label="fragment_beranda"
         tools:layout="@layout/fragment_beranda" />
-    <fragment
-        android:id="@+id/inputFragment"
-        android:name="com.rahmanda.moneyflow.home.InputFragment"
-        android:label="fragment_input"
-        tools:layout="@layout/fragment_input" />
+
+<!--    <fragment-->
+<!--        android:id="@+id/inputFragment"-->
+<!--        android:name="com.rahmanda.moneyflow."-->
+<!--        android:label="fragment_input"-->
+<!--        tools:layout="@layout/activity_input" />-->
     <fragment
         android:id="@+id/riwayatFragment"
         android:name="com.rahmanda.moneyflow.home.RiwayatFragment"

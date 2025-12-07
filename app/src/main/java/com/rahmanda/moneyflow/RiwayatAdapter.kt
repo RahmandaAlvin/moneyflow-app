@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.rahmanda.moneyflow.R
 import java.text.SimpleDateFormat
+import java.text.NumberFormat // <-- IMPORT BARU
 import java.util.Locale
 
 class RiwayatAdapter(private val transactionGroups: List<TransactionGroup>) :
@@ -50,12 +51,16 @@ class RiwayatAdapter(private val transactionGroups: List<TransactionGroup>) :
         val tvAmount: TextView = itemView.findViewById(R.id.tvAmount)
         val tvDateTime: TextView = itemView.findViewById(R.id.tvDateTime)
 
+        // --- PEMFORMATAN RUPIAH BARU ---
+        val rupiahFormat = NumberFormat.getNumberInstance(Locale("id", "ID"))
+        val formattedAmount = rupiahFormat.format(transaction.amount.toLong())
+        // --- END PEMFORMATAN RUPIAH ---
+
         // Set data
         tvCategory.text = transaction.category
         tvDescription.text = transaction.type
 
         // --- PERBAIKAN: HANYA TAMPILKAN JAM DAN MENIT (HH:mm) ---
-        // Pemformatan objek Date untuk menghasilkan JAM:MENIT
         val timeFormat = SimpleDateFormat("HH:mm", Locale("id", "ID"))
         val formattedTime = timeFormat.format(transaction.date)
 
@@ -68,13 +73,13 @@ class RiwayatAdapter(private val transactionGroups: List<TransactionGroup>) :
             // Untuk pemasukan
             ivIcon.setImageResource(R.drawable.increase)
             ivIcon.setBackgroundResource(R.drawable.icon_circle_blue)
-            tvAmount.text = "+ Rp ${transaction.amount.toInt()}"
+            tvAmount.text = "+ Rp $formattedAmount" // <-- MENGGUNAKAN FORMAT BARU
             tvAmount.setTextColor(itemView.context.getColor(android.R.color.holo_blue_dark))
         } else {
             // Untuk pengeluaran
             ivIcon.setImageResource(R.drawable.decrease)
             ivIcon.setBackgroundResource(R.drawable.icon_circle_red)
-            tvAmount.text = "- Rp ${transaction.amount.toInt()}"
+            tvAmount.text = "- Rp $formattedAmount" // <-- MENGGUNAKAN FORMAT BARU
             tvAmount.setTextColor(itemView.context.getColor(android.R.color.holo_red_dark))
         }
     }

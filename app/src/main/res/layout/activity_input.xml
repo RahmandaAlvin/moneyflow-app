@@ -31,7 +31,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp"/>
 
-    <!-- Dropdown Kategori (SEKARANG TEXTVIEW) -->
+    <!-- Dropdown Kategori -->
     <LinearLayout
         android:id="@+id/layoutKategori"
         android:layout_width="140dp"
@@ -44,7 +44,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginStart="16dp">
 
-        <!-- Ikon kategori (Wajib ID ivIconKategori, diubah di Kotlin) -->
+        <!-- Ikon kategori  -->
         <ImageView
             android:id="@+id/ivIconKategori"
             android:layout_width="18dp"
@@ -74,7 +74,7 @@
             android:layout_marginEnd="10dp"/>
     </LinearLayout>
 
-    <!-- Dropdown Tanggal (SEKARANG TEXTVIEW) -->
+    <!-- Dropdown Tanggal -->
     <LinearLayout
         android:id="@+id/layoutTanggal"
         android:layout_width="140dp"
@@ -177,7 +177,7 @@
                 android:layout_marginTop="24dp"
                 android:orientation="horizontal">
 
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/buttonTambahLagi"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
@@ -185,6 +185,7 @@
                     android:background="@drawable/btn_outline"
                     android:text="Tambah Lagi"
                     android:textColor="#060D57"
+                    android:backgroundTint="@null"
                     android:textStyle="bold"/>
 
                 <Space

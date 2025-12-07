@@ -7,7 +7,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.rahmanda.moneyflow.data.SharedPrefManager
 import com.rahmanda.moneyflow.data.TransactionManager
 import com.rahmanda.moneyflow.home.HomeActivity
 import java.text.NumberFormat
@@ -15,32 +14,26 @@ import java.util.*
 
 class InputActivity : AppCompatActivity() {
 
+    // Deklarasi View yang nanti dihubungkan ke XML
     private lateinit var btnClose: ImageView
     private lateinit var amount: EditText
-
-    // TextView sebagai pengganti Spinner
     private lateinit var textViewKategori: TextView
     private lateinit var textViewTanggal: TextView
-
-    // Ikon Kategori
     private lateinit var ivIconKategori: ImageView
-
     private lateinit var editDeskripsi: EditText
     private lateinit var buttonTambahLagi: Button
     private lateinit var buttonSelesai: Button
 
-    private lateinit var sharedPrefManager: SharedPrefManager // Untuk ambil username
-
+    // Variabel untuk menyimpan data input
     private var selectedDateDisplay: String = "Pilih tanggal"
-    private var selectedDateObject: Date = Date() // Objek Date untuk penyimpanan
+    private var selectedDateObject: Date = Date()
     private var selectedType: String = "Pemasukan"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_input)
 
-        sharedPrefManager = SharedPrefManager(this)
-
+        // menalankan semua fungsi setup agar tampilan siap digunakan
         initViews()
         setupCloseButton()
         setupKategoriPicker()
@@ -48,78 +41,63 @@ class InputActivity : AppCompatActivity() {
         setupAmountFormatter()
         setupButtons()
 
-        // Atur tampilan awal
+        // menampilkan nilai default saat activity pertama dibuka
         textViewKategori.text = selectedType
         textViewTanggal.text = selectedDateDisplay
         updateKategoriIcon(selectedType)
     }
 
-    // ... (initViews, setupCloseButton, setupKategoriPicker, updateKategoriIcon, setupTanggalPicker, setupAmountFormatter)
-
-    /* ======================================================
-        INISIALISASI VIEW
-    ====================================================== */
+    // INISIALISASI VIEW yaitu menghubungkan kode dgn XML //
     private fun initViews() {
         btnClose = findViewById(R.id.btnClose)
         amount = findViewById(R.id.textAmount)
-
-        // Inisialisasi TextView
         textViewKategori = findViewById(R.id.textViewKategori)
         textViewTanggal = findViewById(R.id.textViewTanggal)
-
-        // Inisialisasi Ikon
         ivIconKategori = findViewById(R.id.ivIconKategori)
-
         editDeskripsi = findViewById(R.id.editDeskripsi)
         buttonTambahLagi = findViewById(R.id.buttonTambahLagi)
         buttonSelesai = findViewById(R.id.buttonSelesai)
     }
 
-    /* ======================================================
-        1. TOMBOL CLOSE
-    ====================================================== */
+    // TOMBOL CLOSE untuk Menutup Activity //
     private fun setupCloseButton() {
         btnClose.setOnClickListener {
             finish()
         }
     }
 
-    /* ======================================================
-        2. KATEGORI PICKER (UPDATE ICON)
-    ====================================================== */
+    // KATEGORI PICKER digunakan untuk Popup Menu memilih pemasukan/pengeluaran //
     private fun setupKategoriPicker() {
         textViewKategori.setOnClickListener {
             val popup = PopupMenu(this, textViewKategori)
             val kategoriList = listOf("Pemasukan", "Pengeluaran")
 
+            // Isi menu popup
             kategoriList.forEachIndexed { index, item ->
                 popup.menu.add(0, index, index, item)
             }
 
+            // Aksi ketika salah satu kategori dipilih
             popup.setOnMenuItemClickListener { item ->
                 selectedType = item.title.toString()
                 textViewKategori.text = selectedType
-
                 updateKategoriIcon(selectedType)
-
                 true
             }
+
             popup.show()
         }
     }
 
-    // Fungsi Bantu untuk Update Ikon Kategori
+    // Ubah ikon sesuai kategori
     private fun updateKategoriIcon(type: String) {
         when (type) {
             "Pemasukan" -> ivIconKategori.setImageResource(R.drawable.increase)
             "Pengeluaran" -> ivIconKategori.setImageResource(R.drawable.decrease)
-            else -> ivIconKategori.setImageResource(R.drawable.increase)
         }
     }
 
-    /* ======================================================
-        3. TANGGAL PICKER
-    ====================================================== */
+    /*  PICKER untuk Menampilkan date picker dialog, Menyimpan tanggal untuk ditampilkan & disimpan ke DB */
     private fun setupTanggalPicker() {
         textViewTanggal.setOnClickListener {
             openDatePicker()
@@ -127,34 +105,32 @@ class InputActivity : AppCompatActivity() {
     }
 
     private fun openDatePicker() {
-        val c = Calendar.getInstance()
+        val calendar = Calendar.getInstance()
 
-        val dialog = DatePickerDialog(
+        // tampilan muncul kalender
+        val datePickerDialog = DatePickerDialog(
             this,
-            { _, year, month, day ->
-                val selectedCalendar = Calendar.getInstance().apply {
-                    set(year, month, day)
-                }
+            { _, year, month, dayOfMonth ->
 
-                // Simpan objek Date untuk Repository
-                selectedDateObject = selectedCalendar.time
+                // Simpan ke Calendar
+                calendar.set(year, month, dayOfMonth)
 
-                // Format tampilan
-                selectedDateDisplay = "$day/${month + 1}/$year"
+                // Simpan tanggal aslinya sebagai Date DIKIRIM KE DATABASE
+                selectedDateObject = calendar.time
 
+                // Format tampilan di layar
+                selectedDateDisplay = "$dayOfMonth/${month + 1}/$year"
                 textViewTanggal.text = selectedDateDisplay
             },
-            c.get(Calendar.YEAR),
-            c.get(Calendar.MONTH),
-            c.get(Calendar.DAY_OF_MONTH)
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
         )
 
-        dialog.show()
+        datePickerDialog.show()
     }
 
-    /* ======================================================
-        4. FORMAT NOMINAL Rp
-    ====================================================== */
+    // FORMAT NOMINAL Otomatis jadi format "Rp" //
     private fun setupAmountFormatter() {
         amount.addTextChangedListener(object : TextWatcher {
             private var isEditing = false
@@ -163,18 +139,20 @@ class InputActivity : AppCompatActivity() {
                 if (isEditing) return
                 isEditing = true
 
+                // Buang simbol dan pemisah
                 val clean = s.toString().replace("[^\\d]".toRegex(), "")
 
                 if (clean.isNotEmpty()) {
                     val number = clean.toLong()
-                    val formatted = "Rp " +
-                            NumberFormat.getNumberInstance(Locale("id", "ID")).format(number)
+                    val formatted =
+                        "Rp " + NumberFormat.getNumberInstance(Locale("id", "ID")).format(number)
 
                     amount.setText(formatted)
-                    amount.setSelection(formatted.length)
+                    amount.setSelection(formatted.length) // Letak kursor di akhir
                 } else {
                     amount.setText("")
                 }
+
                 isEditing = false
             }
 
@@ -183,78 +161,68 @@ class InputActivity : AppCompatActivity() {
         })
     }
 
-    /* ======================================================
-        FUNGSI UTAMA UNTUK MENYIMPAN TRANSAKSI
-    ====================================================== */
+    // SIMPAN TRANSAKSI dengan Ambil semua input user, Validasi, Simpan ke TransactionManager (DB Lokal) //
     private fun saveTransaction(): Boolean {
         val nominalText = amount.text.toString().trim()
         val description = editDeskripsi.text.toString().trim()
-        val username = sharedPrefManager.getUsername() ?: "unknown"
 
+        // Validasi wajib isi
         if (nominalText.isEmpty() || selectedDateDisplay == "Pilih tanggal") {
             Toast.makeText(this, "Nominal dan Tanggal wajib diisi!", Toast.LENGTH_SHORT).show()
             return false
         }
 
-        // Hapus format Rupiah dan titik ribuan untuk diubah ke Double
+        // Buang format Rupiah agar bisa disimpan sebagai angka
         val cleanAmount = nominalText.replace("[^\\d]".toRegex(), "").toDoubleOrNull()
-
         if (cleanAmount == null || cleanAmount <= 0) {
             Toast.makeText(this, "Nominal tidak valid.", Toast.LENGTH_SHORT).show()
             return false
         }
 
-        // Buat objek Transaksi
+        // Buat data transaksi untuk dikirim ke repository
         val newTransaction = Transaction(
             id = System.currentTimeMillis().toInt(),
             amount = cleanAmount,
             type = selectedType,
-            category = description, // Menggunakan deskripsi sebagai kategori
-            date = selectedDateObject // Menggunakan objek Date yang sudah disimpan
+            category = description,
+            date = selectedDateObject
         )
 
-        // Simpan ke Repository
+        // Kirim data ke Repository agar disimpan
         TransactionManager.addTransaction(this, newTransaction)
-        Toast.makeText(this, "Transaksi sebesar Rp ${NumberFormat.getNumberInstance().format(cleanAmount.toInt())} tersimpan.", Toast.LENGTH_SHORT).show()
+
+        Toast.makeText(this, "Transaksi tersimpan!", Toast.LENGTH_SHORT).show()
         return true
     }
 
+    // RESET INPUT untuk tombol TAMBAH LAGI //
     private fun resetInput() {
         amount.setText("")
         amount.hint = "Rp 0"
         editDeskripsi.setText("")
-
-        // Reset Tanggal ke hari ini
         selectedDateDisplay = "Pilih tanggal"
         selectedDateObject = Date()
         textViewTanggal.text = selectedDateDisplay
-
-        // Reset Kategori ke Pemasukan
         selectedType = "Pemasukan"
         textViewKategori.text = selectedType
         updateKategoriIcon(selectedType)
     }
 
-    /* ======================================================
-        6. TOMBOL: TAMBAH LAGI & SELESAI
-    ====================================================== */
+    // SETUP BUTTONS dengan Tambah Lagi → simpan + reset form, Selesai → simpan + kembali ke Home (langsung buka Riwayat) //
     private fun setupButtons() {
 
-        /* Tombol TAMBAH LAGI (Simpan data, reset input, tetap di halaman) */
         buttonTambahLagi.setOnClickListener {
-            if (saveTransaction()) {
-                resetInput()
-            }
+            if (saveTransaction()) resetInput()
         }
 
-        /* ============================
-            TOMBOL SELESAI (Simpan data, navigasi ke Riwayat)
-        ============================ */
         buttonSelesai.setOnClickListener {
             if (saveTransaction()) {
-                // Setelah data tersimpan → arahkan ke Riwayat
+
+                // Navigasi ke Home dan buka tab Riwayat
                 val intent = Intent(this, HomeActivity::class.java)
                 intent.putExtra("open_riwayat", true)
+
+                // Clear history agar tidak bisa kembali ke Input
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
 

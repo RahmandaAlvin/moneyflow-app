@@ -7,8 +7,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.rahmanda.moneyflow.R
-import java.text.SimpleDateFormat // Diperlukan untuk format tanggal
-import java.util.Locale // Diperlukan untuk format tanggal
+import java.text.SimpleDateFormat
+import java.text.NumberFormat // <-- IMPORT BARU
+import java.util.Locale
 
 class RiwayatAdapter(private val transactionGroups: List<TransactionGroup>) :
     RecyclerView.Adapter<RiwayatAdapter.DateGroupViewHolder>() {
@@ -26,8 +27,14 @@ class RiwayatAdapter(private val transactionGroups: List<TransactionGroup>) :
 
     override fun onBindViewHolder(holder: DateGroupViewHolder, position: Int) {
         val group = transactionGroups[position]
+
+        // Set tanggal (sudah diformat di TransactionManager)
         holder.tvDate.text = group.date
+
+        // Clear container
         holder.containerItems.removeAllViews()
+
+        // Tambahkan item transaksi ke container
         group.transactions.forEach { transaction ->
             val itemView = LayoutInflater.from(holder.itemView.context)
                 .inflate(R.layout.item_transaction, holder.containerItems, false)
@@ -44,21 +51,35 @@ class RiwayatAdapter(private val transactionGroups: List<TransactionGroup>) :
         val tvAmount: TextView = itemView.findViewById(R.id.tvAmount)
         val tvDateTime: TextView = itemView.findViewById(R.id.tvDateTime)
 
+        // --- PEMFORMATAN RUPIAH BARU ---
+        val rupiahFormat = NumberFormat.getNumberInstance(Locale("id", "ID"))
+        val formattedAmount = rupiahFormat.format(transaction.amount.toLong())
+        // --- END PEMFORMATAN RUPIAH ---
+
+        // Set data
         tvCategory.text = transaction.category
         tvDescription.text = transaction.type
-        val timeFormat = SimpleDateFormat("dd MMM", Locale("id", "ID"))
-        val formattedTime = timeFormat.format(transaction.date)
-        tvDateTime.text = formattedTime.uppercase(Locale.getDefault())
 
+        // --- PERBAIKAN: HANYA TAMPILKAN JAM DAN MENIT (HH:mm) ---
+        val timeFormat = SimpleDateFormat("HH:mm", Locale("id", "ID"))
+        val formattedTime = timeFormat.format(transaction.date)
+
+        tvDateTime.text = formattedTime
+        // --- END PERBAIKAN ---
+
+
+        // Set icon dan warna berdasarkan jenis transaksi
         if (transaction.type == "Pemasukan") {
+            // Untuk pemasukan
             ivIcon.setImageResource(R.drawable.increase)
             ivIcon.setBackgroundResource(R.drawable.icon_circle_blue)
-            tvAmount.text = "+ Rp ${transaction.amount.toInt()}"
+            tvAmount.text = "+ Rp $formattedAmount" // <-- MENGGUNAKAN FORMAT BARU
             tvAmount.setTextColor(itemView.context.getColor(android.R.color.holo_blue_dark))
         } else {
+            // Untuk pengeluaran
             ivIcon.setImageResource(R.drawable.decrease)
             ivIcon.setBackgroundResource(R.drawable.icon_circle_red)
-            tvAmount.text = "- Rp ${transaction.amount.toInt()}"
+            tvAmount.text = "- Rp $formattedAmount" // <-- MENGGUNAKAN FORMAT BARU
             tvAmount.setTextColor(itemView.context.getColor(android.R.color.holo_red_dark))
         }
     }

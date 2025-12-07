@@ -29,7 +29,7 @@ class RiwayatFragment : Fragment() {
     private var selectedType: String = "Semua"
 
     private val calendar = Calendar.getInstance()
-    private val displayFormat = SimpleDateFormat("dd MMM yyyy", Locale("id", "ID"))
+    private val displayFormat = SimpleDateFormat("dd MM yyyy", Locale("id", "ID"))
 
     private var allTransactionGroups = listOf<TransactionGroup>()
 
@@ -155,7 +155,7 @@ class RiwayatFragment : Fragment() {
         } catch (e: Exception) {
             return groups
         }
-        val groupDateFormat = java.text.SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID"))
+        val groupDateFormat = java.text.SimpleDateFormat("dd MM yyyy", Locale("id", "ID"))
         val targetGroupHeader = groupDateFormat.format(targetDate)
         return groups.filter { it.date == targetGroupHeader }
     }

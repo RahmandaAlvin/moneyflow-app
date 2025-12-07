@@ -8,6 +8,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.rahmanda.moneyflow.BerandaAdapter
 import com.rahmanda.moneyflow.R
 import com.rahmanda.moneyflow.data.SharedPrefManager
 import com.rahmanda.moneyflow.data.TransactionManager
@@ -26,6 +29,10 @@ class BerandaFragment : Fragment() {
     private lateinit var iconMata: ImageView
     private lateinit var cardPemasukan: View
     private lateinit var cardPengeluaran: View
+
+    // TAMBAHAN: RecyclerView untuk transaksi terakhir
+    private lateinit var recyclerViewTransaksi: RecyclerView
+    private lateinit var berandaAdapter: BerandaAdapter
 
     private var isSaldoVisible = true
     private lateinit var sharedPrefManager: SharedPrefManager
@@ -50,6 +57,7 @@ class BerandaFragment : Fragment() {
         super.onResume()
         // Update data setiap kali kembali ke halaman ini
         updateDisplayData()
+        loadLatestTransactions() // TAMBAHAN: Refresh transaksi terakhir
     }
 
     private fun initViews(view: View) {
@@ -62,18 +70,22 @@ class BerandaFragment : Fragment() {
         iconMata = view.findViewById(R.id.iconMata)
         cardPemasukan = view.findViewById(R.id.cardPemasukan)
         cardPengeluaran = view.findViewById(R.id.cardPengeluaran)
+
+        // TAMBAHAN: Inisialisasi RecyclerView
+        recyclerViewTransaksi = view.findViewById(R.id.recyclerViewTransaksiTerakhir)
     }
 
     private fun setupFunctions() {
         setupCurrentDate()
-        setupWelcomeText() // Fungsi baru untuk set username
+        setupWelcomeText()
         setupSaldoToggle()
         setupClickListeners()
-        // updateDisplayData() dipanggil di onResume
+        setupRecyclerView() // TAMBAHAN: Setup RecyclerView
+        updateDisplayData()
     }
 
     private fun setupWelcomeText() {
-        val username = sharedPrefManager.getUsername() ?: "Pengguna" // Ambil username yang login
+        val username = sharedPrefManager.getUsername() ?: "Pengguna"
         textWelcome.text = "Selamat Datang, $username"
     }
 
@@ -90,25 +102,43 @@ class BerandaFragment : Fragment() {
         }
     }
 
+    // TAMBAHAN: Setup RecyclerView untuk transaksi terakhir
+    private fun setupRecyclerView() {
+        // Setup layout manager
+        recyclerViewTransaksi.layoutManager = LinearLayoutManager(requireContext())
+
+        // Nonaktifkan scroll nested (biar scroll parent ScrollView yang bekerja)
+        recyclerViewTransaksi.isNestedScrollingEnabled = false
+
+        // Load transaksi terbaru
+        loadLatestTransactions()
+    }
+
+    // TAMBAHAN: Load 4 transaksi terbaru
+    private fun loadLatestTransactions() {
+        val latestTransactions = TransactionManager.getAllTransactions()
+            .take(4) // Ambil maksimal 4 transaksi terbaru
+
+        // Update adapter
+        berandaAdapter = BerandaAdapter(latestTransactions)
+        recyclerViewTransaksi.adapter = berandaAdapter
+
+        // Jika tidak ada transaksi, sembunyikan RecyclerView (optional)
+        if (latestTransactions.isEmpty()) {
+            recyclerViewTransaksi.visibility = View.GONE
+        } else {
+            recyclerViewTransaksi.visibility = View.VISIBLE
+        }
+    }
+
     private fun setupClickListeners() {
-        // 1. Lihat Semua Transaksi -> Navigasi ke RiwayatFragment (sudah benar)
+        // 1. Lihat Semua Transaksi -> Navigasi ke RiwayatFragment
         textLihatSemua.setOnClickListener {
-            // Kita asumsikan ini berjalan di Navigation Component
             findNavController().navigate(R.id.riwayatFragment)
         }
 
-        // PENTING: Menghapus navigasi ke InputFragment dari Beranda
-        // Karena InputFragment (InputActivity) diakses dari Tombol Tengah di HomeActivity
-        // Jika Anda ingin tetap mempertahankan navigasi ini, biarkan saja
-        // Jika tidak, Anda bisa menghapus cardPemasukan dan cardPengeluaran click listener.
-
-        /* cardPemasukan.setOnClickListener {
-             // Logic untuk ke InputActivity
-         }
-
-         cardPengeluaran.setOnClickListener {
-             // Logic untuk ke InputActivity
-         } */
+        // Hapus click listener untuk cardPemasukan & cardPengeluaran
+        // karena input transaksi via Bottom Navigation
     }
 
     private fun updateDisplayData() {
@@ -118,16 +148,12 @@ class BerandaFragment : Fragment() {
     }
 
     private fun updateData(saldo: Double, pemasukan: Double, pengeluaran: Double) {
-        // Format angka ke Rupiah (hanya tampilkan integer)
+        // Format angka ke Rupiah
         val format = NumberFormat.getNumberInstance(Locale("id", "ID"))
 
         textPemasukan.text = "Rp ${format.format(pemasukan.toInt())}"
         textPengeluaran.text = "Rp ${format.format(pengeluaran.toInt())}"
         updateSaldoDisplay(saldo)
-
-        // HIDE TRANSAKSI TERAKHIR JIKA KOSONG (Logic ini biasanya di RecyclerView)
-        // Karena Transaksi Terakhir di layout Anda adalah hardcoded, kita abaikan dulu
-        // atau kita set visibility ke GONE jika TransactionManager.getAllTransactions().isEmpty()
     }
 
     private fun updateSaldoDisplay(saldo: Double? = null) {
@@ -140,6 +166,4 @@ class BerandaFragment : Fragment() {
             "Rp ••••••"
         }
     }
-
-    // updateFromInput tidak lagi diperlukan di sini karena data diakses melalui TransactionManager
 }

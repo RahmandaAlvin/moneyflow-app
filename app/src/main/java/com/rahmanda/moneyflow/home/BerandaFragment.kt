@@ -20,6 +20,7 @@ import java.util.*
 
 class BerandaFragment : Fragment() {
 
+    // Deklarasi variabel untuk komponen UI
     private lateinit var textWelcome: TextView
     private lateinit var textDate: TextView
     private lateinit var textSaldo: TextView
@@ -30,36 +31,45 @@ class BerandaFragment : Fragment() {
     private lateinit var cardPemasukan: View
     private lateinit var cardPengeluaran: View
 
-    // TAMBAHAN: RecyclerView untuk transaksi terakhir
+    // Variabel untuk RecyclerView transaksi terakhir
     private lateinit var recyclerViewTransaksi: RecyclerView
     private lateinit var berandaAdapter: BerandaAdapter
 
+    // Status visibilitas saldo (true = terlihat, false = tersembunyi)
     private var isSaldoVisible = true
+
+    // Manager untuk menyimpan dan mengambil data pengguna
     private lateinit var sharedPrefManager: SharedPrefManager
 
+    // Fungsi utama yang dipanggil saat fragment dibuat
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // Inflate layout dari XML ke View
         val view = inflater.inflate(R.layout.fragment_beranda, container, false)
 
+        // Inisialisasi SharedPrefManager untuk mengelola session pengguna
         sharedPrefManager = SharedPrefManager(requireContext())
 
-        // PENTING: Inisialisasi TransactionManager jika belum
+        // TransactionManager sudah siap digunakan
         TransactionManager.initialize(requireContext())
 
+        // Setup semua komponen dan fungsi
         initViews(view)
         setupFunctions()
         return view
     }
 
+    // Dipanggil setiap kali fragment kembali tampil
     override fun onResume() {
         super.onResume()
-        // Update data setiap kali kembali ke halaman ini
+        // Refresh data saldo dan transaksi
         updateDisplayData()
-        loadLatestTransactions() // TAMBAHAN: Refresh transaksi terakhir
+        loadLatestTransactions()
     }
 
+    // Inisialisasi semua komponen UI dari layout
     private fun initViews(view: View) {
         textWelcome = view.findViewById(R.id.textWelcome)
         textDate = view.findViewById(R.id.textDate)
@@ -71,30 +81,34 @@ class BerandaFragment : Fragment() {
         cardPemasukan = view.findViewById(R.id.cardPemasukan)
         cardPengeluaran = view.findViewById(R.id.cardPengeluaran)
 
-        // TAMBAHAN: Inisialisasi RecyclerView
+        // Inisialisasi RecyclerView untuk daftar transaksi
         recyclerViewTransaksi = view.findViewById(R.id.recyclerViewTransaksiTerakhir)
     }
 
+    // Setup semua fungsi yang dibutuhkan
     private fun setupFunctions() {
-        setupCurrentDate()
-        setupWelcomeText()
-        setupSaldoToggle()
-        setupClickListeners()
-        setupRecyclerView() // TAMBAHAN: Setup RecyclerView
-        updateDisplayData()
+        setupCurrentDate()      // Tampilkan tanggal saat ini
+        setupWelcomeText()      // Tampilkan username pengguna
+        setupSaldoToggle()      // Setup toggle show/hide saldo
+        setupClickListeners()   // Setup semua event klik
+        setupRecyclerView()     // Setup recyclerView dan adapter
+        updateDisplayData()     // Tampilkan data saldo dan transaksi
     }
 
+    // Menampilkan username pengguna yang sedang login
     private fun setupWelcomeText() {
         val username = sharedPrefManager.getUsername() ?: "Pengguna"
         textWelcome.text = "Selamat Datang, $username"
     }
 
+    // Menampilkan bulan dan tahun saat ini
     private fun setupCurrentDate() {
         val currentDate = SimpleDateFormat("MMMM yyyy", Locale("id", "ID"))
             .format(Date())
         textDate.text = currentDate
     }
 
+    // Fungsi untuk toggle show/hide saldo ketika icon mata diklik
     private fun setupSaldoToggle() {
         iconMata.setOnClickListener {
             isSaldoVisible = !isSaldoVisible
@@ -102,28 +116,23 @@ class BerandaFragment : Fragment() {
         }
     }
 
-    // TAMBAHAN: Setup RecyclerView untuk transaksi terakhir
+    // Setup RecyclerView: layout manager
     private fun setupRecyclerView() {
-        // Setup layout manager
         recyclerViewTransaksi.layoutManager = LinearLayoutManager(requireContext())
-
-        // Nonaktifkan scroll nested (biar scroll parent ScrollView yang bekerja)
         recyclerViewTransaksi.isNestedScrollingEnabled = false
-
-        // Load transaksi terbaru
         loadLatestTransactions()
     }
 
-    // TAMBAHAN: Load 4 transaksi terbaru
+    // Mengambil 4 transaksi terbaru dari TransactionManager
     private fun loadLatestTransactions() {
         val latestTransactions = TransactionManager.getAllTransactions()
-            .take(4) // Ambil maksimal 4 transaksi terbaru
+            .take(4) // Ambil hanya 4 transaksi terbaru
 
-        // Update adapter
+        // Setup adapter dengan data transaksi
         berandaAdapter = BerandaAdapter(latestTransactions)
         recyclerViewTransaksi.adapter = berandaAdapter
 
-        // Jika tidak ada transaksi, sembunyikan RecyclerView (optional)
+        // Sembunyikan RecyclerView jika tidak ada transaksi
         if (latestTransactions.isEmpty()) {
             recyclerViewTransaksi.visibility = View.GONE
         } else {
@@ -131,24 +140,23 @@ class BerandaFragment : Fragment() {
         }
     }
 
+    // Setup semua event klik di halaman
     private fun setupClickListeners() {
-        // 1. Lihat Semua Transaksi -> Navigasi ke RiwayatFragment
+        // Navigasi ke halaman Riwayat
         textLihatSemua.setOnClickListener {
             findNavController().navigate(R.id.riwayatFragment)
         }
 
-        // Hapus click listener untuk cardPemasukan & cardPengeluaran
-        // karena input transaksi via Bottom Navigation
     }
 
+    // Mengambil dan menampilkan data saldo, pemasukan, pengeluaran
     private fun updateDisplayData() {
-        // Ambil data total dari TransactionManager
         val (saldo, pemasukan, pengeluaran) = TransactionManager.getTotals()
         updateData(saldo, pemasukan, pengeluaran)
     }
 
+    // Menampilkan data ke UI dengan format Rupiah
     private fun updateData(saldo: Double, pemasukan: Double, pengeluaran: Double) {
-        // Format angka ke Rupiah
         val format = NumberFormat.getNumberInstance(Locale("id", "ID"))
 
         textPemasukan.text = "Rp ${format.format(pemasukan.toInt())}"
@@ -156,6 +164,7 @@ class BerandaFragment : Fragment() {
         updateSaldoDisplay(saldo)
     }
 
+    // Menampilkan atau menyembunyikan saldo berdasarkan status isSaldoVisible
     private fun updateSaldoDisplay(saldo: Double? = null) {
         val currentSaldo = saldo ?: TransactionManager.getTotals().first
         val format = NumberFormat.getNumberInstance(Locale("id", "ID"))

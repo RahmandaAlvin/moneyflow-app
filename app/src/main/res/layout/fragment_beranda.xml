@@ -8,12 +8,14 @@
     android:padding="0dp"
     android:clipToPadding="false">
 
+    <!-- Container utama untuk seluruh konten -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- ================ SECTION 1: HEADER DENGAN BACKGROUND BIRU ================ -->
+        <!-- SECTION 1: HEADER DENGAN BACKGROUND BIRU -->
+        <!-- Latar belakang biru dengan sudut melengkung di bagian bawah -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -22,7 +24,7 @@
             android:paddingTop="20dp"
             android:paddingBottom="20dp">
 
-            <!-- HEADER: Selamat Datang dan Tanggal -->
+            <!-- Bagian sambutan dan tanggal -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -30,6 +32,7 @@
                 android:paddingStart="24dp"
                 android:paddingEnd="24dp">
 
+                <!-- Teks sambutan untuk pengguna -->
                 <TextView
                     android:id="@+id/textWelcome"
                     android:layout_width="wrap_content"
@@ -39,6 +42,7 @@
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
+                <!-- Teks bulan dan tahun saat ini -->
                 <TextView
                     android:id="@+id/textDate"
                     android:layout_width="wrap_content"
@@ -50,7 +54,7 @@
 
             </LinearLayout>
 
-            <!-- CARD SALDO UTAMA -->
+            <!-- Card untuk menampilkan saldo utama -->
             <LinearLayout
                 android:layout_width="327dp"
                 android:layout_height="wrap_content"
@@ -61,12 +65,13 @@
                 android:orientation="vertical"
                 android:padding="20dp">
 
-                <!-- BARIS ATAS: Judul + Icon Mata -->
+                <!-- Baris judul saldo dan icon toggle -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
+                    <!-- Label "Saldo Utama" -->
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -75,6 +80,7 @@
                         android:textColor="#666666"
                         android:textSize="16sp" />
 
+                    <!-- Icon mata untuk toggle show/hide saldo -->
                     <ImageView
                         android:id="@+id/iconMata"
                         android:layout_width="24dp"
@@ -84,7 +90,7 @@
 
                 </LinearLayout>
 
-                <!-- SALDO -->
+                <!-- Teks saldo utama (bisa di-toggle show/hide) -->
                 <TextView
                     android:id="@+id/textSaldo"
                     android:layout_width="wrap_content"
@@ -97,7 +103,7 @@
 
             </LinearLayout>
 
-            <!-- PEMASUKAN & PENGELUARAN (SEJAJAR) -->
+            <!-- Container untuk card pemasukan dan pengeluaran -->
             <LinearLayout
                 android:layout_width="327dp"
                 android:layout_height="wrap_content"
@@ -106,7 +112,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="10dp">
 
-                <!-- PEMASUKAN -->
+                <!-- Card pemasukan dengan background biru -->
                 <LinearLayout
                     android:id="@+id/cardPemasukan"
                     android:layout_width="0dp"
@@ -119,19 +125,21 @@
                     android:layout_marginEnd="8dp"
                     android:gravity="center_vertical">
 
-                    <!-- BARIS ATAS: Icon + Text -->
+                    <!-- Baris icon dan teks label -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical">
 
+                        <!-- Icon panah naik untuk pemasukan -->
                         <ImageView
                             android:layout_width="18dp"
                             android:layout_height="18dp"
                             android:src="@drawable/increase"
                             app:tint="#FFFFFF" />
 
+                        <!-- Label "Pemasukan" -->
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -142,6 +150,7 @@
 
                     </LinearLayout>
 
+                    <!-- Teks jumlah pemasukan -->
                     <TextView
                         android:id="@+id/textPemasukan"
                         android:layout_width="wrap_content"
@@ -154,7 +163,7 @@
 
                 </LinearLayout>
 
-                <!-- PENGELUARAN -->
+                <!-- Card pengeluaran dengan background merah -->
                 <LinearLayout
                     android:id="@+id/cardPengeluaran"
                     android:layout_width="0dp"
@@ -167,19 +176,21 @@
                     android:layout_marginStart="8dp"
                     android:gravity="center_vertical">
 
-                    <!-- BARIS ATAS: Icon + Text -->
+                    <!-- Baris icon dan teks label -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical">
 
+                        <!-- Icon panah turun untuk pengeluaran -->
                         <ImageView
                             android:layout_width="18dp"
                             android:layout_height="18dp"
                             android:src="@drawable/decrease"
                             app:tint="#FFFFFF" />
 
+                        <!-- Label "Pengeluaran" -->
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -190,6 +201,7 @@
 
                     </LinearLayout>
 
+                    <!-- Teks jumlah pengeluaran -->
                     <TextView
                         android:id="@+id/textPengeluaran"
                         android:layout_width="wrap_content"
@@ -202,9 +214,10 @@
 
                 </LinearLayout>
             </LinearLayout>
-        </LinearLayout> <!-- END SECTION 1: HEADER DENGAN BACKGROUND BIRU -->
+        </LinearLayout>
 
-        <!-- ================ SECTION 2: PROMO BANNER MELENGKUNG ================ -->
+        <!-- SECTION 2: PROMO BANNER -->
+        <!-- Banner promosi dengan sudut melengkung -->
         <ImageView
             android:id="@+id/imagePromoBanner"
             android:layout_width="match_parent"
@@ -218,9 +231,9 @@
             android:adjustViewBounds="true"
             android:clipToOutline="true"
             android:contentDescription="Banner promo aplikasi MoneyFlow" />
-        <!-- ================ END SECTION 2: PROMO BANNER MELENGKUNG ================ -->
 
-        <!-- ================ SECTION 3: TRANSAKSI TERAKHIR ================ -->
+        <!-- SECTION 3: TRANSAKSI TERAKHIR -->
+        <!-- Card untuk menampilkan daftar transaksi terbaru -->
         <LinearLayout
             android:layout_width="327dp"
             android:layout_height="wrap_content"
@@ -232,12 +245,13 @@
             android:elevation="4dp"
             android:layout_marginBottom="30dp">
 
-            <!-- HEADER: Judul + Lihat Semua -->
+            <!-- Header dengan judul dan tombol navigasi -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
+                <!-- Judul "Transaksi Terakhir" -->
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -247,6 +261,7 @@
                     android:textStyle="bold"
                     android:textColor="#333333" />
 
+                <!-- Tombol navigasi ke halaman riwayat lengkap -->
                 <TextView
                     android:id="@+id/textLihatSemua"
                     android:layout_width="wrap_content"
@@ -257,7 +272,8 @@
 
             </LinearLayout>
 
-            <!-- RECYCLERVIEW UNTUK TRANSAKSI TERAKHIR (MAKS 4) -->
+            <!-- RecyclerView untuk menampilkan 4 transaksi terbaru -->
+            <!-- Data diisi secara dinamis dari TransactionManager -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewTransaksiTerakhir"
                 android:layout_width="match_parent"
@@ -269,7 +285,6 @@
                 tools:listitem="@layout/item_transaction_beranda" />
 
         </LinearLayout>
-        <!-- ================ END SECTION 3: TRANSAKSI TERAKHIR ================ -->
 
     </LinearLayout>
 </ScrollView>

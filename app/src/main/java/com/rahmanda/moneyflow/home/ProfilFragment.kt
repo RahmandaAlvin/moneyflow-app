@@ -21,7 +21,7 @@ class ProfilFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        val view = inflater.inflate(R.layout.fragment_profil, container, false)
+        val view = inflater.inflate(R.layout.fragment_profil, container, false) // xml ke view
 
         sharedPrefManager = SharedPrefManager(requireContext())
 

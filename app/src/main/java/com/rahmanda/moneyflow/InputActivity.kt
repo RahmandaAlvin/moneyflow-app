@@ -1,17 +1,17 @@
 package com.rahmanda.moneyflow
 
 // Import semua komponen yang diperlukan
-import android.app.DatePickerDialog // Untuk memilih tanggal
-import android.content.Intent // Untuk pindah halaman (Activity)
+import android.app.DatePickerDialog
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
-import android.text.TextWatcher // Untuk memantau perubahan text jumlah uang
+import android.text.TextWatcher
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.rahmanda.moneyflow.data.TransactionManager // Tempat penyimpanan data transaksi (database lokal)
-import com.rahmanda.moneyflow.home.HomeActivity // Activity tujuan setelah selesai input
-import java.text.NumberFormat // Untuk format angka jadi Rp
-import java.util.* // Untuk Date dan Calendar
+import com.rahmanda.moneyflow.data.TransactionManager
+import com.rahmanda.moneyflow.home.HomeActivity
+import java.text.NumberFormat
+import java.util.*
 
 class InputActivity : AppCompatActivity() {
 
@@ -31,9 +31,9 @@ class InputActivity : AppCompatActivity() {
     private var selectedDateObject: Date = Date()
     private var selectedType: String = "Pemasukan"
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_input)
+    override fun onCreate(savedInstanceState: Bundle?) { // memanggil fungsi oncreate boleh kosong
+        super.onCreate(savedInstanceState) //milik parent, parameter
+        setContentView(R.layout.activity_input) // menghubungkan Activity dengan Layout XML
 
         // menjalankan semua fungsi setup agar tampilan siap digunakan
         initViews()
@@ -43,7 +43,7 @@ class InputActivity : AppCompatActivity() {
         setupAmountFormatter()
         setupButtons()
 
-        // menampilkan nilai default saat activity pertama dibuka
+        // tampilan awal saat pertama dibuka
         textViewKategori.text = selectedType
         textViewTanggal.text = selectedDateDisplay
         updateKategoriIcon(selectedType)
@@ -61,7 +61,7 @@ class InputActivity : AppCompatActivity() {
         buttonSelesai = findViewById(R.id.buttonSelesai)
     }
 
-    // TOMBOL CLOSE untuk Menutup Activity //
+    // TOMBOL CLOSE x untuk Menutup Activity //
     private fun setupCloseButton() {
         btnClose.setOnClickListener {
             finish()
@@ -99,7 +99,7 @@ class InputActivity : AppCompatActivity() {
         }
     }
 
-    /*  PICKER untuk Menampilkan date picker dialog, Menyimpan tanggal untuk ditampilkan & disimpan ke DB */
+    /* Menampilkan tgl Menyimpan tanggal untuk ditampilkan & disimpan ke DB */
     private fun setupTanggalPicker() {
         textViewTanggal.setOnClickListener {
             openDatePicker()
@@ -107,7 +107,7 @@ class InputActivity : AppCompatActivity() {
     }
 
     private fun openDatePicker() {
-        val calendar = Calendar.getInstance()
+        val calendar = Calendar.getInstance() //tanggal hari ini
 
         // tampilan muncul kalender
         val datePickerDialog = DatePickerDialog(
@@ -135,13 +135,13 @@ class InputActivity : AppCompatActivity() {
     // FORMAT NOMINAL Otomatis jadi format "Rp" //
     private fun setupAmountFormatter() {
         amount.addTextChangedListener(object : TextWatcher {
-            private var isEditing = false
+            private var isEditing = false //format looping
 
             override fun afterTextChanged(s: Editable?) {
                 if (isEditing) return
                 isEditing = true
 
-                // membuang simbol dan pemisah
+                // membuang simbol dan pemisah (khusus digit)
                 val clean = s.toString().replace("[^\\d]".toRegex(), "")
 
                 // untuk memberi batas angka
@@ -159,6 +159,7 @@ class InputActivity : AppCompatActivity() {
                 isEditing = false
             }
 
+// pakai override afternya saja untuk format rp
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
@@ -193,7 +194,7 @@ class InputActivity : AppCompatActivity() {
             date = selectedDateObject
         )
 
-        // Kirim data ke Repository agar disimpan
+        // Kirim data dgn panggil fungsi
         TransactionManager.addTransaction(this, newTransaction)
 
         Toast.makeText(this, "Transaksi tersimpan!", Toast.LENGTH_SHORT).show()

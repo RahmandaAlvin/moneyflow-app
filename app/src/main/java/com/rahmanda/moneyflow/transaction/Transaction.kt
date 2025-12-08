@@ -3,15 +3,21 @@ package com.rahmanda.moneyflow
 import java.util.Date
 
 data class Transaction(
+    // ID unik untuk setiap transaksi
     val id: Int,
-    val date: Date, // Menggunakan Date object untuk sorting dan grouping yang akurat
-    val type: String, // "Pemasukan" atau "Pengeluaran"
-    val category: String, // Contoh: "Sertifikat Peny"
-    //val description: String, // Contoh: "RPA v 1.4"
+
+    val date: Date,
+
+    val type: String,
+
+    val category: String,
+
     val amount: Double
 )
 
 data class TransactionGroup(
+
     val date: String,
+
     val transactions: List<Transaction>
 )

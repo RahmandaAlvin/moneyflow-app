@@ -14,8 +14,6 @@ import java.util.Locale
 class BerandaAdapter(private val transactions: List<Transaction>) :
     RecyclerView.Adapter<BerandaAdapter.TransactionViewHolder>() {
 
-    // ViewHolder: menyimpan referensi ke elemen UI di setiap item
-    // Menggunakan layout: item_transaction_beranda.xml
     class TransactionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         val ivIcon: ImageView = itemView.findViewById(R.id.ivIcon)
@@ -37,14 +35,11 @@ class BerandaAdapter(private val transactions: List<Transaction>) :
 
     // Mengatur tampilan setiap item transaksi
     override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) {
-        // Ambil data transaksi berdasarkan posisi
         val transaction = transactions[position]
 
-        // Tampilkan kategori dan jenis transaksi
         holder.tvCategory.text = transaction.category
         holder.tvType.text = transaction.type
 
-        // Format nominal ke format Rupiah Indonesia
         val format = NumberFormat.getNumberInstance(Locale("id", "ID"))
         val formattedAmount = format.format(transaction.amount.toInt())
 

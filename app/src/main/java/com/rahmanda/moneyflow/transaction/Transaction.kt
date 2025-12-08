@@ -7,7 +7,7 @@ data class Transaction(
     val date: Date, // Menggunakan Date object untuk sorting dan grouping yang akurat
     val type: String, // "Pemasukan" atau "Pengeluaran"
     val category: String, // Contoh: "Sertifikat Peny"
-    // val description: String, // Contoh: "RPA v 1.4"
+    //val description: String, // Contoh: "RPA v 1.4"
     val amount: Double
 )
 

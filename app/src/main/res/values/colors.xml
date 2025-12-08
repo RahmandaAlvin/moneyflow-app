@@ -9,5 +9,6 @@
     <!-- Warna transaksi -->
     <color name="red">#FF0000</color>  <!-- Untuk pengeluaran -->
     <color name="green">#00FF00</color> <!-- Untuk pemasukan -->
-    <color name="primary">#007AFF</color> <!-- Untuk teks "Semua" -->
+    <color name="blue">#007AFF</color> <!-- Untuk teks "Semua" -->
+    <color name="blue_dark">#060D57</color> <!-- Untuk teks "Semua" -->
 </resources>

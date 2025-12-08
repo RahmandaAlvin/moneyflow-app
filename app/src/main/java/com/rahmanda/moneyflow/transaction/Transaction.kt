@@ -4,7 +4,6 @@ import java.util.Date
 
 data class Transaction(
     // ID unik untuk setiap transaksi
-    // Digunakan untuk identifikasi dan pembaruan data
     val id: Int,
 
     val date: Date,

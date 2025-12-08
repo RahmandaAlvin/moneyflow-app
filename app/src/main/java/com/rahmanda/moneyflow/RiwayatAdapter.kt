@@ -5,16 +5,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.rahmanda.moneyflow.R
 import java.text.SimpleDateFormat
-import java.text.NumberFormat // <-- IMPORT BARU
+import java.text.NumberFormat
 import java.util.Locale
 
 class RiwayatAdapter(private val transactionGroups: List<TransactionGroup>) :
     RecyclerView.Adapter<RiwayatAdapter.DateGroupViewHolder>() {
 
     class DateGroupViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        // ViewHolder untuk item_transaction_with_date
         val tvDate: TextView = itemView.findViewById(R.id.tvDate)
         val containerItems: ViewGroup = itemView.findViewById(R.id.containerItems)
     }
@@ -28,59 +29,58 @@ class RiwayatAdapter(private val transactionGroups: List<TransactionGroup>) :
     override fun onBindViewHolder(holder: DateGroupViewHolder, position: Int) {
         val group = transactionGroups[position]
 
-        // Set tanggal (sudah diformat di TransactionManager)
         holder.tvDate.text = group.date
-
-        // Clear container
         holder.containerItems.removeAllViews()
 
-        // Tambahkan item transaksi ke container
         group.transactions.forEach { transaction ->
             val itemView = LayoutInflater.from(holder.itemView.context)
                 .inflate(R.layout.item_transaction, holder.containerItems, false)
 
-            bindTransactionItem(itemView, transaction)
+            // Memanggil bindTransactionItem dengan holder yang benar
+            bindTransactionItem(itemView, holder, transaction)
             holder.containerItems.addView(itemView)
         }
     }
 
-    private fun bindTransactionItem(itemView: View, transaction: Transaction) {
+    // Mengubah fungsi ini agar menerima holder untuk akses context
+    private fun bindTransactionItem(itemView: View, holder: DateGroupViewHolder, transaction: Transaction) {
+        // Mengakses View di dalam item_transaction.xml
         val ivIcon: ImageView = itemView.findViewById(R.id.tvIcon)
         val tvCategory: TextView = itemView.findViewById(R.id.tvCategory)
         val tvDescription: TextView = itemView.findViewById(R.id.tvDescription)
         val tvAmount: TextView = itemView.findViewById(R.id.tvAmount)
         val tvDateTime: TextView = itemView.findViewById(R.id.tvDateTime)
 
-        // --- PEMFORMATAN RUPIAH BARU ---
+        // Pemformatan Nominal Rupiah
         val rupiahFormat = NumberFormat.getNumberInstance(Locale("id", "ID"))
         val formattedAmount = rupiahFormat.format(transaction.amount.toLong())
-        // --- END PEMFORMATAN RUPIAH ---
 
-        // Set data
         tvCategory.text = transaction.category
         tvDescription.text = transaction.type
 
-        // --- PERBAIKAN: HANYA TAMPILKAN JAM DAN MENIT (HH:mm) ---
+        // Pemformatan Waktu: HANYA JAM DAN MENIT (HH:mm)
         val timeFormat = SimpleDateFormat("HH:mm", Locale("id", "ID"))
         val formattedTime = timeFormat.format(transaction.date)
 
         tvDateTime.text = formattedTime
-        // --- END PERBAIKAN ---
 
-
-        // Set icon dan warna berdasarkan jenis transaksi
+        // Logika Warna dan Ikon
         if (transaction.type == "Pemasukan") {
-            // Untuk pemasukan
+            // PEMASUKAN: Icon biru, text hijau
             ivIcon.setImageResource(R.drawable.increase)
             ivIcon.setBackgroundResource(R.drawable.icon_circle_blue)
-            tvAmount.text = "+ Rp $formattedAmount" // <-- MENGGUNAKAN FORMAT BARU
-            tvAmount.setTextColor(itemView.context.getColor(android.R.color.holo_blue_dark))
+            tvAmount.text = "+ Rp $formattedAmount"
+            tvAmount.setTextColor(
+                ContextCompat.getColor(holder.itemView.context, R.color.blue_dark)
+            )
         } else {
-            // Untuk pengeluaran
+            // PENGELUARAN: Icon merah, text merah
             ivIcon.setImageResource(R.drawable.decrease)
             ivIcon.setBackgroundResource(R.drawable.icon_circle_red)
-            tvAmount.text = "- Rp $formattedAmount" // <-- MENGGUNAKAN FORMAT BARU
-            tvAmount.setTextColor(itemView.context.getColor(android.R.color.holo_red_dark))
+            tvAmount.text = "- Rp $formattedAmount"
+            tvAmount.setTextColor(
+                ContextCompat.getColor(holder.itemView.context, R.color.red)
+            )
         }
     }
 

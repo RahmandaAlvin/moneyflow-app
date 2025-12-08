@@ -30,14 +30,11 @@ class RiwayatFragment : Fragment() {
     private lateinit var ivIconJenis: ImageView
     private lateinit var recyclerViewRiwayat: RecyclerView
 
-    // selectedDate akan menyimpan format dd/MM/yyyy untuk filtering
     private var selectedDate: String = ""
     private var selectedType: String = "Semua"
 
     private val calendar = Calendar.getInstance()
-    // Format Display sesuai permintaan: dd/MM/yyyy (Contoh: 07/12/2025)
     private val displayFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-    // Format untuk konversi internal: dd/MM/yyyy (Tetap sama)
     private val filterFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
     private var allTransactionGroups = listOf<TransactionGroup>()
@@ -47,7 +44,6 @@ class RiwayatFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // 2. Inflate Layout secara Manual
         val view = inflater.inflate(R.layout.fragment_riwayat, container, false)
 
         TransactionManager.initialize(requireContext())
@@ -58,7 +54,6 @@ class RiwayatFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 3. Inisialisasi View dengan findViewById()
         textViewTanggal = view.findViewById(R.id.textViewTanggal)
         textViewJenis = view.findViewById(R.id.textViewJenis)
         ivIconTanggal = view.findViewById(R.id.ivIconTanggal)
@@ -86,7 +81,6 @@ class RiwayatFragment : Fragment() {
     private fun setupJenisPicker() {
         updateJenisIcon(0)
 
-        // Mengganti binding.textViewJenis dengan textViewJenis
         textViewJenis.setOnClickListener {
             val popup = PopupMenu(requireContext(), textViewJenis)
             val jenisList = listOf("Semua", "Pemasukan", "Pengeluaran")
@@ -132,11 +126,8 @@ class RiwayatFragment : Fragment() {
         }
     }
 
-    // =======================================================
-    // KODE DATE PICKER DENGAN LOGIKA onDateSetListener EKSPLISIT
-    // =======================================================
     private fun openDatePicker() {
-        // Menggunakan sintaks objek untuk onDateSetListener yang eksplisit
+
         val dateSetListener = object : DatePickerDialog.OnDateSetListener {
             override fun onDateSet(
                 view: android.widget.DatePicker?,
@@ -144,19 +135,10 @@ class RiwayatFragment : Fragment() {
                 month: Int,
                 dayOfMonth: Int
             ) {
-                // 1. Set Calendar dengan tanggal yang dipilih
                 calendar.set(year, month, dayOfMonth)
-
-                // 2. Format untuk Tampilan (Contoh: 07/12/2025)
                 val displayDate = displayFormat.format(calendar.time)
-
-                // 3. Format untuk Filter Internal (Sama dengan format display)
                 selectedDate = filterFormat.format(calendar.time)
-
-                // 4. Update Teks View
                 textViewTanggal.text = displayDate
-
-                // 5. Terapkan filter
                 applyFilters()
             }
         }
@@ -177,7 +159,7 @@ class RiwayatFragment : Fragment() {
         if (selectedDate.isNotEmpty() && selectedDate != "Pilih tanggal") {
             filteredGroups = filterByDate(selectedDate, filteredGroups)
         }
-        val finalFilteredGroups = if (selectedType != "Semua") {
+        val finalFilteredGroups =  if (selectedType != "Semua") {
             filterByType(selectedType, filteredGroups)
         } else {
             filteredGroups
@@ -187,7 +169,6 @@ class RiwayatFragment : Fragment() {
     }
 
     private fun filterByDate(dateStr: String, groups: List<TransactionGroup>): List<TransactionGroup> {
-        // Format input (dd/MM/yyyy)
         val inputFormat = java.text.SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         val targetDate = try {
             inputFormat.parse(dateStr)
@@ -195,7 +176,6 @@ class RiwayatFragment : Fragment() {
             return groups
         }
 
-        // Format Header Grup (dd MMMM yyyy)
         val groupDateFormat = java.text.SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID"))
         val targetGroupHeader = groupDateFormat.format(targetDate)
 
@@ -223,5 +203,4 @@ class RiwayatFragment : Fragment() {
         }
     }
 
-    // Fungsi onDestroyView() yang terkait dengan binding sudah dihapus
 }

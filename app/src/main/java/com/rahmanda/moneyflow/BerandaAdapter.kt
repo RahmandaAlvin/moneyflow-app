@@ -54,7 +54,7 @@ class BerandaAdapter(private val transactions: List<Transaction>) :
             holder.ivIcon.setBackgroundResource(R.drawable.icon_circle_blue)
             holder.tvAmount.text = "+ Rp $formattedAmount"
             holder.tvAmount.setTextColor(
-                ContextCompat.getColor(holder.itemView.context, R.color.green)
+                ContextCompat.getColor(holder.itemView.context, R.color.blue_dark)
             )
         } else {
             holder.ivIcon.setImageResource(R.drawable.decrease)

@@ -35,7 +35,6 @@ class BerandaFragment : Fragment() {
     private lateinit var recyclerViewTransaksi: RecyclerView
     private lateinit var berandaAdapter: BerandaAdapter
 
-    // Status visibilitas saldo (true = terlihat, false = tersembunyi)
     private var isSaldoVisible = true
 
     // Manager untuk menyimpan dan mengambil data pengguna
@@ -64,7 +63,6 @@ class BerandaFragment : Fragment() {
     // Dipanggil setiap kali fragment kembali tampil
     override fun onResume() {
         super.onResume()
-        // Refresh data saldo dan transaksi
         updateDisplayData()
         loadLatestTransactions()
     }
@@ -126,7 +124,7 @@ class BerandaFragment : Fragment() {
     // Mengambil 4 transaksi terbaru dari TransactionManager
     private fun loadLatestTransactions() {
         val latestTransactions = TransactionManager.getAllTransactions()
-            .take(4) // Ambil hanya 4 transaksi terbaru
+            .take(4)
 
         // Setup adapter dengan data transaksi
         berandaAdapter = BerandaAdapter(latestTransactions)
@@ -142,7 +140,6 @@ class BerandaFragment : Fragment() {
 
     // Setup semua event klik di halaman
     private fun setupClickListeners() {
-        // Navigasi ke halaman Riwayat
         textLihatSemua.setOnClickListener {
             findNavController().navigate(R.id.riwayatFragment)
         }

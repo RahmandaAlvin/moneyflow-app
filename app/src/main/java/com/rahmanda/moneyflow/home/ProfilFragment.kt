@@ -13,6 +13,7 @@ import com.rahmanda.moneyflow.data.SharedPrefManager
 
 class ProfilFragment : Fragment() {
 
+    // lateinit berarti akan diinisialisasi nanti (setelah onCreateView)
     private lateinit var sharedPrefManager: SharedPrefManager
 
     override fun onCreateView(
@@ -28,7 +29,7 @@ class ProfilFragment : Fragment() {
 
         // Aksi logout
         btnLogout.setOnClickListener {
-            // 1. Bersihkan sesi (Username)
+            // 1. menghapus Username
             sharedPrefManager.clearSession()
 
             // 2. Arahkan ke LoginActivity

@@ -31,13 +31,11 @@ class BerandaFragment : Fragment() {
     private lateinit var cardPemasukan: View
     private lateinit var cardPengeluaran: View
 
-    // Variabel untuk RecyclerView transaksi terakhir
     private lateinit var recyclerViewTransaksi: RecyclerView
     private lateinit var berandaAdapter: BerandaAdapter
 
     private var isSaldoVisible = true
 
-    // Manager untuk menyimpan dan mengambil data pengguna
     private lateinit var sharedPrefManager: SharedPrefManager
 
     // Fungsi utama yang dipanggil saat fragment dibuat
@@ -79,7 +77,6 @@ class BerandaFragment : Fragment() {
         cardPemasukan = view.findViewById(R.id.cardPemasukan)
         cardPengeluaran = view.findViewById(R.id.cardPengeluaran)
 
-        // Inisialisasi RecyclerView untuk daftar transaksi
         recyclerViewTransaksi = view.findViewById(R.id.recyclerViewTransaksiTerakhir)
     }
 
@@ -126,11 +123,9 @@ class BerandaFragment : Fragment() {
         val latestTransactions = TransactionManager.getAllTransactions()
             .take(4)
 
-        // Setup adapter dengan data transaksi
         berandaAdapter = BerandaAdapter(latestTransactions)
         recyclerViewTransaksi.adapter = berandaAdapter
 
-        // Sembunyikan RecyclerView jika tidak ada transaksi
         if (latestTransactions.isEmpty()) {
             recyclerViewTransaksi.visibility = View.GONE
         } else {

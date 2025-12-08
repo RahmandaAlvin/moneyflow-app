@@ -1,20 +1,21 @@
 package com.rahmanda.moneyflow
 
-import android.app.DatePickerDialog
-import android.content.Intent
+// Import semua komponen yang diperlukan
+import android.app.DatePickerDialog // Untuk memilih tanggal
+import android.content.Intent // Untuk pindah halaman (Activity)
 import android.os.Bundle
 import android.text.Editable
-import android.text.TextWatcher
+import android.text.TextWatcher // Untuk memantau perubahan text jumlah uang
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.rahmanda.moneyflow.data.TransactionManager
-import com.rahmanda.moneyflow.home.HomeActivity
-import java.text.NumberFormat
-import java.util.*
+import com.rahmanda.moneyflow.data.TransactionManager // Tempat penyimpanan data transaksi (database lokal)
+import com.rahmanda.moneyflow.home.HomeActivity // Activity tujuan setelah selesai input
+import java.text.NumberFormat // Untuk format angka jadi Rp
+import java.util.* // Untuk Date dan Calendar
 
 class InputActivity : AppCompatActivity() {
 
-    // Deklarasi View yang nanti dihubungkan ke XML
+    // Deklarasi View yang nanti dihubungkan ke XML belum diberi nilai, (harus var, non nullable)
     private lateinit var btnClose: ImageView
     private lateinit var amount: EditText
     private lateinit var textViewKategori: TextView
@@ -24,7 +25,8 @@ class InputActivity : AppCompatActivity() {
     private lateinit var buttonTambahLagi: Button
     private lateinit var buttonSelesai: Button
 
-    // Variabel untuk menyimpan data input
+    // Variabel untuk menyimpan data input (langsung diberi nilai)
+
     private var selectedDateDisplay: String = "Pilih tanggal"
     private var selectedDateObject: Date = Date()
     private var selectedType: String = "Pemasukan"
@@ -33,7 +35,7 @@ class InputActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_input)
 
-        // menalankan semua fungsi setup agar tampilan siap digunakan
+        // menjalankan semua fungsi setup agar tampilan siap digunakan
         initViews()
         setupCloseButton()
         setupKategoriPicker()
@@ -139,9 +141,10 @@ class InputActivity : AppCompatActivity() {
                 if (isEditing) return
                 isEditing = true
 
-                // Buang simbol dan pemisah
+                // membuang simbol dan pemisah
                 val clean = s.toString().replace("[^\\d]".toRegex(), "")
 
+                // untuk memberi batas angka
                 if (clean.isNotEmpty()) {
                     val number = clean.toLong()
                     val formatted =
@@ -162,12 +165,14 @@ class InputActivity : AppCompatActivity() {
     }
 
     // SIMPAN TRANSAKSI dengan Ambil semua input user, Validasi, Simpan ke TransactionManager (DB Lokal) //
+
+    //mengambil data dari ui
     private fun saveTransaction(): Boolean {
-        val nominalText = amount.text.toString().trim()
+        val nominalText = amount.text.toString().trim() // edit teks, konversi dengan string
         val description = editDeskripsi.text.toString().trim()
 
         // Validasi wajib isi
-        if (nominalText.isEmpty() || selectedDateDisplay == "Pilih tanggal") {
+        if (nominalText.isEmpty() || selectedDateDisplay == "Pilih tanggal") { //cek inputan, tanggal kosong
             Toast.makeText(this, "Nominal dan Tanggal wajib diisi!", Toast.LENGTH_SHORT).show()
             return false
         }

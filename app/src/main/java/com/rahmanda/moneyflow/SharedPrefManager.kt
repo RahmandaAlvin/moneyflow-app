@@ -10,7 +10,7 @@ class SharedPrefManager(private val context: Context) {
     private val KEY_USERNAME = "username"
     fun saveUsername(username: String) {
         with(sharedPref.edit()) {
-            putString(KEY_USERNAME, username) // menerima usernem
+            putString(KEY_USERNAME, username)
             apply() // menyimpan
         }
     }

@@ -9,7 +9,6 @@
     android:paddingHorizontal="0dp"
     android:background="#FFFFFF">
 
-    <!-- ICON LINGKARAN: Menunjukkan jenis transaksi secara visual -->
     <!-- Background lingkaran berwarna (biru/merah) dengan icon di tengah -->
     <ImageView
         android:id="@+id/ivIcon"
@@ -22,7 +21,6 @@
         tools:src="@drawable/decrease" />
 
     <!-- INFO TRANSAKSI: Menampilkan detail transaksi -->
-    <!-- Menggunakan layout_weight agar mengisi sisa space -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -33,7 +31,6 @@
         android:gravity="center_vertical">
 
         <!-- NAMA KATEGORI TRANSAKSI -->
-        <!-- Contoh: "Beli Nasi Padang", "Gaji Bulanan", "Bayar Listrik" -->
         <TextView
             android:id="@+id/tvCategory"
             android:layout_width="wrap_content"
@@ -46,7 +43,6 @@
             tools:text="Beli Nasi Padang" />
 
         <!-- JENIS TRANSAKSI: "Pemasukan" atau "Pengeluaran" -->
-        <!-- Teks lebih kecil dengan warna abu-abu untuk secondary information -->
         <TextView
             android:id="@+id/tvType"
             android:layout_width="wrap_content"
@@ -59,8 +55,6 @@
     </LinearLayout>
 
     <!-- NOMINAL TRANSAKSI: Jumlah uang dengan format Rupiah -->
-    <!-- Ditempatkan di sebelah kanan, vertikal center alignment -->
-    <!-- Warna dan tanda (+/-) disesuaikan di BerandaAdapter.kt -->
     <TextView
         android:id="@+id/tvAmount"
         android:layout_width="wrap_content"

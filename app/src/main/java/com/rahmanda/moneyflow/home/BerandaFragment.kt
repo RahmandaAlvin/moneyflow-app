@@ -87,12 +87,12 @@ class BerandaFragment : Fragment() {
 
     // Setup semua fungsi yang dibutuhkan
     private fun setupFunctions() {
-        setupCurrentDate()      // Tampilkan tanggal saat ini
-        setupWelcomeText()      // Tampilkan username pengguna
-        setupSaldoToggle()      // Setup toggle show/hide saldo
-        setupClickListeners()   // Setup semua event klik
-        setupRecyclerView()     // Setup recyclerView dan adapter
-        updateDisplayData()     // Tampilkan data saldo dan transaksi
+        setupCurrentDate()
+        setupWelcomeText()
+        setupSaldoToggle()
+        setupClickListeners()
+        setupRecyclerView()
+        updateDisplayData()
     }
 
     // Menampilkan username pengguna yang sedang login

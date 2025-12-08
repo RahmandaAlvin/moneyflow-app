@@ -24,12 +24,14 @@ object TransactionManager {
     // In-memory storage untuk transaksi (di-load dari SharedPreferences)
     private val transactions: MutableList<Transaction> = mutableListOf()
 
+    // BerandaFragment.kt
     fun initialize(context: Context) {
         if (isInitialized) return  // Hindari load berulang
         loadTransactions(context)
         isInitialized = true
     }
 
+    // Internal
     private fun loadTransactions(context: Context) {
         val sharedPref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         val json = sharedPref.getString(KEY_TRANSACTIONS, "[]")  // Default empty array
@@ -42,6 +44,7 @@ object TransactionManager {
         transactions.addAll(gson.fromJson(json, type))
     }
 
+    // Internal
     private fun saveTransactions(context: Context) {
         val sharedPref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         val json = gson.toJson(transactions)  // Serialize ke JSON
@@ -52,15 +55,19 @@ object TransactionManager {
         }
     }
 
+
+    // InputActivity.kt
     fun addTransaction(context: Context, transaction: Transaction) {
         transactions.add(0, transaction)  // Add di awal list
-        saveTransactions(context)          // Simpan perubahan
+        saveTransactions(context)
     }
 
+    // BerandaFragment.kt
     fun getAllTransactions(): List<Transaction> {
         return transactions.toList()  // Return copy untuk safety
     }
 
+    // BerandaFragment.kt
     fun getTotals(): Triple<Double, Double, Double> {
         var totalSaldo = 0.0
         var totalPemasukan = 0.0
@@ -76,10 +83,10 @@ object TransactionManager {
             }
         }
 
-        // Triple: (Saldo, TotalPemasukan, TotalPengeluaran)
         return Triple(totalSaldo, totalPemasukan, totalPengeluaran)
     }
 
+    // Riwayat fragment pakai ini
     fun getGroupedTransactions(): List<TransactionGroup> {
         // Format tanggal untuk grouping: "13 November 2025"
         val dateFormat = SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID"))

@@ -11,23 +11,19 @@ import java.text.NumberFormat
 import java.util.Locale
 
 // Adapter untuk RecyclerView di halaman Beranda
-// Menampilkan maksimal 4 transaksi terbaru tanpa informasi tanggal/waktu
 class BerandaAdapter(private val transactions: List<Transaction>) :
     RecyclerView.Adapter<BerandaAdapter.TransactionViewHolder>() {
 
     // ViewHolder: menyimpan referensi ke elemen UI di setiap item
     // Menggunakan layout: item_transaction_beranda.xml
     class TransactionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        // Icon lingkaran (biru untuk pemasukan, merah untuk pengeluaran)
+
         val ivIcon: ImageView = itemView.findViewById(R.id.ivIcon)
 
-        // Nama kategori transaksi
         val tvCategory: TextView = itemView.findViewById(R.id.tvCategory)
 
-        // Jenis transaksi
         val tvType: TextView = itemView.findViewById(R.id.tvType)
 
-        // Jumlah nominal transaksi dengan format Rupiah
         val tvAmount: TextView = itemView.findViewById(R.id.tvAmount)
 
     }

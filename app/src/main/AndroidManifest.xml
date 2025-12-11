@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MoneyFlow">
 
-        <!-- LoginActivity sebagai activity utama -->
+        <!-- Login jadi Activity utama -->
         <activity
             android:name=".LoginActivity"
             android:exported="true">
@@ -22,19 +22,12 @@
             </intent-filter>
         </activity>
 
-        <!-- ⚠ HAPUS INI - MainActivity sudah tidak dipakai -->
-        <!-- <activity android:name=".MainActivity" android:exported="false" /> -->
-
-        <!-- HomeActivity (container fragment) -->
+        <!-- HomeActivity: tempat fragment ditampilkan -->
         <activity
             android:name=".home.HomeActivity"
-            android:exported="false">
-        </activity>
-
-        <!-- InputActivity (jika masih dipakai) -->
-        <activity
-            android:name=".InputActivity"
-            android:exported="false"/>
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
 
     </application>
+
 </manifest>

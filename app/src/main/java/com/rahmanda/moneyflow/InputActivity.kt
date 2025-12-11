@@ -31,9 +31,10 @@ class InputActivity : AppCompatActivity() {
     private var selectedDateObject: Date = Date()
     private var selectedType: String = "Pemasukan"
 
-    override fun onCreate(savedInstanceState: Bundle?) { // memanggil fungsi oncreate boleh kosong
+    // implementasi fungsi dari parent, boleh kosong
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState) //milik parent, parameter
-        setContentView(R.layout.activity_input) // menghubungkan Activity dengan Layout XML
+        setContentView(R.layout.fragment_input) // menghubungkan Activity dengan Layout XML
 
         // menjalankan semua fungsi setup agar tampilan siap digunakan
         initViews()
@@ -51,11 +52,9 @@ class InputActivity : AppCompatActivity() {
 
     // INISIALISASI VIEW yaitu menghubungkan kode dgn XML //
     private fun initViews() {
-        btnClose = findViewById(R.id.btnClose)
         amount = findViewById(R.id.textAmount)
         textViewKategori = findViewById(R.id.textViewKategori)
         textViewTanggal = findViewById(R.id.textViewTanggal)
-        ivIconKategori = findViewById(R.id.ivIconKategori)
         editDeskripsi = findViewById(R.id.editDeskripsi)
         buttonTambahLagi = findViewById(R.id.buttonTambahLagi)
         buttonSelesai = findViewById(R.id.buttonSelesai)
@@ -134,17 +133,17 @@ class InputActivity : AppCompatActivity() {
 
     // FORMAT NOMINAL Otomatis jadi format "Rp" //
     private fun setupAmountFormatter() {
-        amount.addTextChangedListener(object : TextWatcher {
+        amount.addTextChangedListener(object : TextWatcher { // mendeteksi perubahan teks
             private var isEditing = false //format looping
 
             override fun afterTextChanged(s: Editable?) {
                 if (isEditing) return
                 isEditing = true
 
-                // membuang simbol dan pemisah (khusus digit)
+                // membuang simbol dan pemisah (khusus angka)
                 val clean = s.toString().replace("[^\\d]".toRegex(), "")
 
-                // untuk memberi batas angka
+                // untuk memberi batas angka 20 digit
                 if (clean.isNotEmpty()) {
                     val number = clean.toLong()
                     val formatted =
